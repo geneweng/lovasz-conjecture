@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Lovász Conjecture</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap">
+<style>
+:root {
+  --paper:#F6F7F5; --ink:#1A2230; --muted:#5B6470; --rule:#D5D9D3; --soft:#ECEEEA;
+  --accent:#1E6E73; --accent-ink:#155257; --open:#8A4B1A;
+  --display:"Fraunces", Georgia, "Times New Roman", serif;
+  --body:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --ui:"IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:#151A1F; --ink:#E6E8E4; --muted:#9AA3AD; --rule:#2C343C; --soft:#1D242B;
+    --accent:#5FC1C5; --accent-ink:#8ED6D9; --open:#E0A06A; color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+body { margin:0; background:var(--paper); color:var(--ink); font-family:var(--body); font-size:17px; line-height:1.6; }
+a { color:var(--accent-ink); text-decoration-thickness:1px; text-underline-offset:2px; }
+a:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+.wrap { max-width:1120px; margin:0 auto; padding:0 24px 96px; }
+nav.site { display:flex; gap:22px; padding:18px 0 0; font-family:var(--ui); font-size:13px; letter-spacing:.04em; text-transform:uppercase; }
+nav.site a { color:var(--muted); text-decoration:none; }
+nav.site a:hover { color:var(--accent-ink); }
+header.mast { display:grid; grid-template-columns:1fr auto; gap:32px; align-items:end; padding:40px 0 32px; border-bottom:1px solid var(--rule); }
+.eyebrow { font-family:var(--ui); font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin:0 0 14px; }
+header h1 { font-family:var(--display); font-weight:500; font-size:clamp(34px, 4.6vw, 54px); line-height:1.08; margin:0 0 18px; text-wrap:balance; max-width:22ch; letter-spacing:-.01em; }
+.dek { font-size:19px; color:var(--muted); max-width:58ch; margin:0; text-wrap:pretty; }
+.petersen { width:168px; height:168px; }
+.petersen line { stroke:var(--accent); stroke-width:2.2; stroke-linecap:round; }
+.petersen circle { fill:var(--paper); stroke:var(--ink); stroke-width:2.2; }
+.grid { display:grid; grid-template-columns:220px minmax(0,1fr); gap:56px; padding-top:40px; }
+nav.toc { position:sticky; top:24px; align-self:start; font-family:var(--ui); font-size:13.5px; line-height:1.45; }
+nav.toc .eyebrow { margin-bottom:10px; }
+nav.toc ol { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:7px; }
+nav.toc a { color:var(--muted); text-decoration:none; }
+nav.toc a:hover { color:var(--accent-ink); text-decoration:underline; }
+main { max-width:68ch; min-width:0; }
+main h2 { font-family:var(--display); font-weight:600; font-size:27px; line-height:1.2; margin:56px 0 14px; text-wrap:balance; letter-spacing:-.005em; }
+main h2:first-child { margin-top:0; }
+main h3 { font-family:var(--ui); font-weight:600; font-size:14px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent-ink); margin:34px 0 8px; }
+main p { margin:0 0 16px; text-wrap:pretty; }
+main ul, main ol { padding-left:1.3em; margin:0 0 18px; }
+main li { margin:0 0 7px; }
+main li::marker { color:var(--muted); font-family:var(--ui); font-size:.9em; }
+main strong { font-weight:600; }
+main code { font-family:"IBM Plex Mono", ui-monospace, Menlo, monospace; font-size:.88em; background:var(--soft); padding:1px 5px; border-radius:3px; }
+main pre { background:var(--soft); padding:14px 16px; overflow-x:auto; border-radius:4px; font-size:14px; line-height:1.5; }
+main pre code { background:none; padding:0; }
+.tablewrap { overflow-x:auto; margin:8px 0 26px; border-top:2px solid var(--ink); border-bottom:1px solid var(--rule); }
+table { border-collapse:collapse; width:100%; font-family:var(--ui); font-size:14px; line-height:1.4; font-variant-numeric:tabular-nums; }
+th { text-align:left; font-weight:600; font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); padding:10px 14px 8px 0; border-bottom:1px solid var(--rule); }
+td { vertical-align:top; padding:9px 14px 9px 0; border-bottom:1px solid var(--rule); }
+tr:last-child td { border-bottom:0; }
+#references ~ p { font-family:var(--ui); font-size:13px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin:28px 0 8px; }
+#references ~ ul { list-style:none; padding:0; font-size:15px; }
+#references ~ ul li { padding:6px 0 6px 18px; text-indent:-18px; border-bottom:1px solid var(--soft); }
+mjx-container { font-size:104% !important; }
+mjx-container[display="true"] { overflow-x:auto; }
+@media (max-width: 860px) {
+  .grid { grid-template-columns:1fr; gap:32px; }
+  nav.toc { position:static; border-bottom:1px solid var(--rule); padding-bottom:20px; }
+  nav.toc ol { flex-direction:row; flex-wrap:wrap; gap:6px 18px; }
+  header.mast { grid-template-columns:1fr; }
+  .petersen { width:120px; height:120px; }
+  body { font-size:16px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav class="site"><a href="index.html">Progress</a><a href="survey.html">Survey</a><a href="dihedral.html">Dihedral notes</a><a href="https://github.com/geneweng/lovasz-conjecture">Repository</a></nav>
+<header class="mast">
+  <div>
+    <p class="eyebrow">Survey · Hamiltonian paths in vertex-transitive graphs</p>
+    <h1>The Lovász Conjecture</h1>
+    <p class="dek">What is known, by order, by group, and by density, about whether every finite connected vertex-transitive graph has a Hamiltonian path.</p>
+  </div>
+  <svg class="petersen" viewBox="-104 -104 208 208" role="img" aria-label="The Petersen graph">
+<line x1="0.0" y1="-90.0" x2="85.6" y2="-27.8"/>
+<line x1="0.0" y1="-90.0" x2="0.0" y2="-42.0"/>
+<line x1="0.0" y1="-42.0" x2="24.7" y2="34.0"/>
+<line x1="85.6" y1="-27.8" x2="52.9" y2="72.8"/>
+<line x1="85.6" y1="-27.8" x2="39.9" y2="-13.0"/>
+<line x1="39.9" y1="-13.0" x2="-24.7" y2="34.0"/>
+<line x1="52.9" y1="72.8" x2="-52.9" y2="72.8"/>
+<line x1="52.9" y1="72.8" x2="24.7" y2="34.0"/>
+<line x1="24.7" y1="34.0" x2="-39.9" y2="-13.0"/>
+<line x1="-52.9" y1="72.8" x2="-85.6" y2="-27.8"/>
+<line x1="-52.9" y1="72.8" x2="-24.7" y2="34.0"/>
+<line x1="-24.7" y1="34.0" x2="0.0" y2="-42.0"/>
+<line x1="-85.6" y1="-27.8" x2="0.0" y2="-90.0"/>
+<line x1="-85.6" y1="-27.8" x2="-39.9" y2="-13.0"/>
+<line x1="-39.9" y1="-13.0" x2="39.9" y2="-13.0"/>
+<circle cx="0.0" cy="-90.0" r="5"/>
+<circle cx="85.6" cy="-27.8" r="5"/>
+<circle cx="52.9" cy="72.8" r="5"/>
+<circle cx="-52.9" cy="72.8" r="5"/>
+<circle cx="-85.6" cy="-27.8" r="5"/>
+<circle cx="0.0" cy="-42.0" r="5"/>
+<circle cx="39.9" cy="-13.0" r="5"/>
+<circle cx="24.7" cy="34.0" r="5"/>
+<circle cx="-24.7" cy="34.0" r="5"/>
+<circle cx="-39.9" cy="-13.0" r="5"/>
+</svg>
+</header>
+<div class="grid">
+<nav class="toc" aria-label="Sections">
+  <p class="eyebrow">Sections</p>
+  <ol>
+  <li><a href="#abstract">Abstract</a></li>
+<li><a href="#1-the-conjecture-and-its-variants">1. The conjecture and its variants</a></li>
+<li><a href="#2-structure-and-obstructions">2. Structure and obstructions</a></li>
+<li><a href="#3-vertex-transitive-graphs-by-order">3. Vertex-transitive graphs by order</a></li>
+<li><a href="#4-long-cycles-in-vertex-transitive-graphs">4. Long cycles in vertex-transitive graphs</a></li>
+<li><a href="#5-cayley-graphs">5. Cayley graphs</a></li>
+<li><a href="#6-cayley-digraphs">6. Cayley digraphs</a></li>
+<li><a href="#7-related-and-stronger-notions">7. Related and stronger notions</a></li>
+<li><a href="#8-computational-evidence">8. Computational evidence</a></li>
+<li><a href="#9-open-problems">9. Open problems</a></li>
+<li><a href="#references">References</a></li>
+  </ol>
+</nav>
+<main>
+<h2 id="abstract">Abstract</h2>
+<p>The Lovász conjecture (1969) asserts that every finite connected vertex-transitive graph has a Hamiltonian path. Its stronger and more commonly studied form asserts a Hamiltonian cycle, with exactly five known exceptions, and its most-studied special case asserts that every connected Cayley graph on a group of order at least three is Hamiltonian. All three statements are open. This survey collects the statements and their history, the structural facts that constrain any counterexample, the results organized by order of the graph, by class of group, and by density, the quantitative "long cycle" program that has advanced rapidly since 2023, the directed setting where the conjecture is false, and the main open problems.</p>
+<h2 id="1-the-conjecture-and-its-variants">1. The conjecture and its variants</h2>
+<h3 id="11-definitions">1.1 Definitions</h3>
+<p>A graph <span class="math inline">\(\Gamma\)</span> is <em>vertex-transitive</em> if its automorphism group acts transitively on the vertex set. For a finite group <span class="math inline">\(G\)</span> and a subset <span class="math inline">\(S \subseteq G \setminus \{1\}\)</span> with <span class="math inline">\(S = S^{-1}\)</span>, the <em>Cayley graph</em> <span class="math inline">\(\mathrm{Cay}(G,S)\)</span> has vertex set <span class="math inline">\(G\)</span> and an edge between <span class="math inline">\(g\)</span> and <span class="math inline">\(gs\)</span> for every <span class="math inline">\(s \in S\)</span>. It is connected exactly when <span class="math inline">\(S\)</span> generates <span class="math inline">\(G\)</span>, and left multiplication makes it vertex-transitive. By Sabidussi's theorem a vertex-transitive graph is a Cayley graph if and only if its automorphism group contains a subgroup acting regularly on the vertices. Not every vertex-transitive graph is a Cayley graph; the Petersen graph is the smallest example. The <em>Cayley digraph</em> <span class="math inline">\(\overrightarrow{\mathrm{Cay}}(G,S)\)</span> is defined the same way without the symmetry requirement on <span class="math inline">\(S\)</span>.</p>
+<p>A <em>Hamiltonian path</em> visits every vertex exactly once, and a <em>Hamiltonian cycle</em> is a closed such path. A graph with a Hamiltonian cycle is called <em>Hamiltonian</em>.</p>
+<h3 id="12-the-statements">1.2 The statements</h3>
+<p>Four statements circulate under the name "Lovász conjecture". They are listed from weakest to strongest in the undirected case, followed by the directed variant.</p>
+<p><strong>Conjecture A (Hamiltonian path).</strong> Every finite connected vertex-transitive graph has a Hamiltonian path.</p>
+<p><strong>Conjecture B (Hamiltonian cycle).</strong> Every finite connected vertex-transitive graph has a Hamiltonian cycle, except for the five known exceptions listed in 1.3.</p>
+<p><strong>Conjecture C (Cayley graphs).</strong> Every connected Cayley graph on a finite group with at least three elements has a Hamiltonian cycle.</p>
+<p><strong>Conjecture D (Cayley digraphs).</strong> The corresponding statement for directed Cayley graphs is <em>false</em>. Rankin's theorem (Section 6.1) produces infinitely many connected Cayley digraphs on two generators with no directed Hamiltonian cycle, and Morris (2013) produced infinitely many with no directed Hamiltonian path.</p>
+<p>Conjecture B implies A. Conjecture C is the special case of B in which the graph is a Cayley graph, and it is consistent with the five exceptions because none of them is a Cayley graph. Most of the literature since the 1980s addresses Conjecture C or Conjecture B restricted to graphs of a given order.</p>
+<h3 id="13-the-five-exceptions">1.3 The five exceptions</h3>
+<p>The connected vertex-transitive graphs known to have no Hamiltonian cycle are:</p>
+<ol type="1">
+<li>the complete graph <span class="math inline">\(K_2\)</span>;</li>
+<li>the Petersen graph (10 vertices, cubic);</li>
+<li>the Coxeter graph (28 vertices, cubic);</li>
+<li>the truncation of the Petersen graph (30 vertices), obtained by replacing each vertex with a triangle;</li>
+<li>the truncation of the Coxeter graph (84 vertices).</li>
+</ol>
+<p>All five have Hamiltonian paths, so none contradicts Conjecture A. The Petersen and Coxeter graphs are hypohamiltonian: deleting any single vertex leaves a Hamiltonian graph. Truncation of a cubic arc-transitive graph yields a cubic vertex-transitive graph, and a Hamiltonian cycle in the truncation would force a Hamiltonian cycle in the original graph, which explains items 4 and 5. Truncating again does not produce a vertex-transitive graph, so the construction stops there. Among the generalized Petersen graphs <span class="math inline">\(GP(n,2)\)</span>, Alspach (1983) showed that the non-Hamiltonian ones are exactly those with <span class="math inline">\(n \equiv 5 \pmod 6\)</span>, but only <span class="math inline">\(GP(5,2)\)</span>, the Petersen graph itself, is vertex-transitive.</p>
+<h3 id="14-history-and-original-wording">1.4 History and original wording</h3>
+<p>Lovász posed the problem at the 1969 Calgary conference (published 1970 in <em>Combinatorial Structures and Their Applications</em>, Problem 11). The original wording asks for a construction in the negative direction: "Let us construct a finite, connected undirected graph, which is symmetric and has no simple path containing all the vertices." Pak and Radoičić (2009) note that the problem is therefore "misnamed" as a conjecture, since Lovász framed it as a search for a counterexample. Lovász was motivated by a question of Gallai on whether all longest paths of a connected graph share a vertex; for vertex-transitive graphs a positive answer would force every longest path to be Hamiltonian. Gallai's question was answered negatively by Walther.</p>
+<p>The problem has older roots. Rankin (1948) studied Hamiltonian cycles in two-generated Cayley digraphs to settle a question in English change ringing (campanology): whether an extent of Grandsire Triples can be rung using only plain leads and bobs. His negative answer, now known as Rankin's campanological theorem, is the earliest general non-Hamiltonicity result for Cayley digraphs. Rapaport-Strasser (1959) asked explicitly whether every Cayley graph has a Hamiltonian cycle and proved the three-involution lemma in Section 5.6, motivated by bell ringing and the knight's tour. Knuth treats the topic in <em>The Art of Computer Programming</em> Volume 4A, Section 7.2.1.2, and the general problem is closely tied to combinatorial Gray codes, where a Hamiltonian path in a Cayley graph gives a listing of all group elements in which consecutive elements differ by one generator.</p>
+<h3 id="15-the-opposing-conjectures">1.5 The opposing conjectures</h3>
+<p>Babai (1996, <em>Handbook of Combinatorics</em>, Section 3.3) argued that belief in the conjecture "only reflects that Hamiltonicity obstacles are not well understood", and conjectured the opposite:</p>
+<p><strong>Babai's conjecture.</strong> There is a constant <span class="math inline">\(c &gt; 0\)</span> such that infinitely many connected vertex-transitive graphs, and indeed Cayley graphs, on <span class="math inline">\(n\)</span> vertices have no cycle of length at least <span class="math inline">\((1-c)n\)</span>.</p>
+<p>At the other extreme, Thomassen conjectured that there are only finitely many connected vertex-transitive non-Hamiltonian graphs. Mohar proposed intermediate statements: that every connected vertex-transitive graph has a 2-walk, meaning a closed walk visiting every vertex at most twice, and that every such graph has a spanning tree of maximum degree 3. Conjecture A implies the first of these, which implies the second, and no progress on distinguishing these possibilities has been made. It is not known whether a single counterexample to Conjecture A would generate infinitely many.</p>
+<h2 id="2-structure-and-obstructions">2. Structure and obstructions</h2>
+<p>Several standard obstructions to Hamiltonicity are unavailable for vertex-transitive graphs, which partly explains why no sixth exception has appeared.</p>
+<ul>
+<li><strong>Connectivity.</strong> Watkins (1970) proved that a connected vertex-transitive graph of degree <span class="math inline">\(d\)</span> has vertex connectivity at least <span class="math inline">\(2(d+1)/3\)</span>, and Mader proved the same for edge connectivity <span class="math inline">\(d\)</span>. High connectivity rules out cut-vertex obstructions.</li>
+<li><strong>Toughness.</strong> Babai observed that connected Cayley graphs are 1-tough: removing <span class="math inline">\(k\)</span> vertices leaves at most <span class="math inline">\(k\)</span> components. Chvátal's toughness obstruction therefore never applies, and any counterexample among Cayley graphs would also be a counterexample to the folklore expectation that tough enough graphs are Hamiltonian.</li>
+<li><strong>Bipartite parity.</strong> A bipartite graph with unequal sides has no Hamiltonian cycle, but a vertex-transitive bipartite graph is regular and hence balanced.</li>
+<li><strong>Expansion.</strong> Cayley graphs with many random generators are expanders (Alon and Roichman 1994), and expanders contain paths of length <span class="math inline">\((1-c)n\)</span> (Pósa). Whether bounded-degree expansion forces Hamiltonicity is one of the questions Babai raises.</li>
+</ul>
+<p>The main constructive tool is the <em>lifting</em> or <em>quotient</em> method. A semiregular automorphism <span class="math inline">\(\rho\)</span> of order <span class="math inline">\(m\)</span> with <span class="math inline">\(k\)</span> orbits, called <span class="math inline">\((k,m)\)</span>-semiregular, defines a quotient graph on the orbits. A Hamiltonian cycle in the quotient can sometimes be lifted to a Hamiltonian cycle in <span class="math inline">\(\Gamma\)</span> when the "voltage" accumulated around the quotient cycle generates <span class="math inline">\(\langle \rho \rangle\)</span>. For Cayley graphs this is the Factor Group Lemma of Witte and Gallian: if <span class="math inline">\(N\)</span> is a cyclic normal subgroup of <span class="math inline">\(G\)</span> and <span class="math inline">\(\mathrm{Cay}(G/N, S)\)</span> has a Hamiltonian cycle whose product of generators generates <span class="math inline">\(N\)</span>, then <span class="math inline">\(\mathrm{Cay}(G,S)\)</span> has a Hamiltonian cycle. Marušič's polycirculant conjecture (1981), that every vertex-transitive graph has a nontrivial semiregular automorphism, is what makes the quotient method broadly available; it is known for cubic graphs and for many orders but is itself open. Kutnar and Marušič (2009) survey this circle of ideas.</p>
+<h2 id="3-vertex-transitive-graphs-by-order">3. Vertex-transitive graphs by order</h2>
+<p>Most results on Conjecture B outside the Cayley setting classify the transitive permutation groups of a given degree, usually using the classification of finite simple groups for the primitive case and semiregular automorphisms for the imprimitive case. The table lists what is known for orders with few prime factors, where <span class="math inline">\(p, q\)</span> are distinct primes.</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Order</th>
+<th>Hamiltonian path</th>
+<th>Hamiltonian cycle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">\(p\)</span></td>
+<td>yes (circulants)</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><span class="math inline">\(2p\)</span></td>
+<td>yes</td>
+<td>yes except Petersen (Alspach 1979)</td>
+</tr>
+<tr>
+<td><span class="math inline">\(3p\)</span></td>
+<td>yes</td>
+<td>yes (Marušič 1985)</td>
+</tr>
+<tr>
+<td><span class="math inline">\(4p\)</span></td>
+<td>yes (Marušič and Parsons 1983)</td>
+<td>yes (Kutnar and Marušič 2008)</td>
+</tr>
+<tr>
+<td><span class="math inline">\(5p\)</span></td>
+<td>yes (Marušič and Parsons 1982)</td>
+<td>open in general</td>
+</tr>
+<tr>
+<td><span class="math inline">\(6p\)</span></td>
+<td>yes (Kutnar and Šparl 2009)</td>
+<td>yes except truncated Petersen (Du and Zhou 2025)</td>
+</tr>
+<tr>
+<td><span class="math inline">\(10p\)</span>, <span class="math inline">\(p \ne 7\)</span></td>
+<td>yes (Kutnar, Marušič and Zhang 2012; Du, Luo and Yu 2024 for the remaining <span class="math inline">\(\mathrm{PSL}(2,s^m)\)</span> family)</td>
+<td>partial</td>
+</tr>
+<tr>
+<td><span class="math inline">\(pq\)</span></td>
+<td>yes</td>
+<td>yes except Petersen (Du, Kutnar and Marušič 2021)</td>
+</tr>
+<tr>
+<td><span class="math inline">\(2pq\)</span></td>
+<td>partial</td>
+<td>primitive case: yes except Coxeter (Du, Tian and Yu 2022); imprimitive case partially settled (Zhou 2026)</td>
+</tr>
+<tr>
+<td><span class="math inline">\(p^2\)</span>, <span class="math inline">\(p^3\)</span></td>
+<td>yes</td>
+<td>yes (Marušič 1985; all such graphs are Cayley)</td>
+</tr>
+<tr>
+<td><span class="math inline">\(p^4\)</span></td>
+<td>yes</td>
+<td>yes (Chen 1998)</td>
+</tr>
+<tr>
+<td><span class="math inline">\(p^5\)</span></td>
+<td>yes</td>
+<td>open</td>
+</tr>
+<tr>
+<td><span class="math inline">\(2p^2\)</span></td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+</tbody>
+</table></div>
+<p>Two points deserve emphasis. First, the product-of-two-primes theorem of Du, Kutnar and Marušič, published in <em>Combinatorica</em> in 2021, was the first order result whose proof needed classical Hamiltonicity theorems of Chvátal and Jackson together with number-theoretic facts about quadratic residues, which suggests that further order results will not be purely group-theoretic. Second, the exceptions appearing in the <span class="math inline">\(2p\)</span>, <span class="math inline">\(6p\)</span> and <span class="math inline">\(2pq\)</span> rows are exactly the known five, so the order program has so far confirmed Conjecture B rather than merely Conjecture A.</p>
+<h2 id="4-long-cycles-in-vertex-transitive-graphs">4. Long cycles in vertex-transitive graphs</h2>
+<p>Babai (1979) initiated the quantitative version of the problem: how long a cycle must a connected vertex-transitive graph on <span class="math inline">\(n\)</span> vertices contain? His argument gave <span class="math inline">\(\sqrt{3n}\)</span>, and this stood for over forty years. Since 2023 the exponent has moved quickly.</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Bound on longest cycle</th>
+<th>Reference</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">\(\sqrt{3n}\)</span></td>
+<td>Babai 1979</td>
+</tr>
+<tr>
+<td><span class="math inline">\((1-o(1))\,n^{3/5}\)</span></td>
+<td>DeVos 2023</td>
+</tr>
+<tr>
+<td><span class="math inline">\(\Omega(n^{13/21})\)</span></td>
+<td>Groenland, Longbrake, Steiner, Turcotte and Yepremyan 2025</td>
+</tr>
+<tr>
+<td><span class="math inline">\(\Omega(n^{9/14})\)</span></td>
+<td>Norin, Steiner, Thomassé and Wollan 2025</td>
+</tr>
+<tr>
+<td><span class="math inline">\(n^{2/3 - o(1)}\)</span></td>
+<td>Bucić, Christoph, Pokrovskiy and Steiner 2026</td>
+</tr>
+</tbody>
+</table></div>
+<p>DeVos's proof modifies Babai's original argument. The two 2025 papers analyze intersections of longest cycles and small transversals of them. Bucić, Christoph, Pokrovskiy and Steiner combine path embedding in sublinear expanders with expander decompositions, and they note that the exponent <span class="math inline">\(2/3\)</span> is a natural barrier for the existing approaches. The gap between <span class="math inline">\(n^{2/3}\)</span> and the linear cycles predicted by Babai's conjecture, let alone the Hamiltonian cycles predicted by Lovász, remains large.</p>
+<p>For vertex-transitive <em>digraphs</em> the picture is different. Bucić, Hendrey, Mohar, Steiner and Yepremyan (2026) proved a lower bound of <span class="math inline">\(\Omega(n^{1/3})\)</span> for the longest directed cycle and constructed connected vertex-transitive digraphs whose longest directed cycle misses about <span class="math inline">\(\log n\)</span> vertices. Li and Methuku (2026) improved the lower bound to <span class="math inline">\(\Omega(\sqrt{n})\)</span> and constructed infinitely many connected vertex-transitive digraphs whose longest directed cycle misses at least <span class="math inline">\(n/12\)</span> vertices, answering a question of Alspach from 1981. So the directed analogue of Babai's conjecture is true.</p>
+<h2 id="5-cayley-graphs">5. Cayley graphs</h2>
+<h3 id="51-abelian-groups-and-p-groups">5.1 Abelian groups and p-groups</h3>
+<p>Every connected Cayley graph on an abelian group with at least three elements has a Hamiltonian cycle; this is an easy induction and is folklore. Chen and Quimpo (1981) proved much more: such a graph of degree at least 3 is Hamilton-connected, or Hamilton-laceable when bipartite. Witte (1986) proved that every connected Cayley <em>digraph</em> on a <span class="math inline">\(p\)</span>-group has a directed Hamiltonian cycle, so in particular Conjecture C holds for all <span class="math inline">\(p\)</span>-groups.</p>
+<h3 id="52-groups-with-small-commutator-subgroup">5.2 Groups with small commutator subgroup</h3>
+<p>A long line of work, mostly by Dave Witte Morris and coauthors, proves Conjecture C when the commutator subgroup <span class="math inline">\([G,G]\)</span> is small or cyclic. The proofs use the Factor Group Lemma and increasingly elaborate case analysis.</p>
+<ul>
+<li><span class="math inline">\([G,G]\)</span> cyclic of prime order: Marušič (1983) and Durnberger (1983).</li>
+<li><span class="math inline">\([G,G]\)</span> cyclic of prime-power order: Keating and Witte (1985).</li>
+<li><span class="math inline">\(G\)</span> nilpotent and <span class="math inline">\([G,G]\)</span> cyclic: Ghaderpour and Morris (2014).</li>
+<li><span class="math inline">\(|G|\)</span> odd and <span class="math inline">\([G,G]\)</span> cyclic of order <span class="math inline">\(p^m q^n\)</span>: Morris (2015).</li>
+<li><span class="math inline">\(|[G,G]| = 2p\)</span> for an odd prime <span class="math inline">\(p\)</span>: Morris (2018).</li>
+<li>Lehner, Maghsoudi and Miraftab (2024) extended Durnberger's theorem to infinite vertex-transitive graphs whose automorphism group has a transitive subgroup with commutator subgroup of prime order.</li>
+</ul>
+<h3 id="53-groups-whose-order-has-few-prime-factors">5.3 Groups whose order has few prime factors</h3>
+<p>Kutnar, Marušič, Morris, Morris and Šparl (2012) organized a program of settling Conjecture C for all groups of a given small order. With later additions the list of orders for which every connected Cayley graph is Hamiltonian includes, for distinct primes <span class="math inline">\(p, q, r, s\)</span>:</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Order</th>
+<th>Reference</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">\(kp\)</span> with <span class="math inline">\(k &lt; 32\)</span>, <span class="math inline">\(k \ne 24\)</span></td>
+<td>Kutnar, Marušič, Morris, Morris and Šparl 2012; Curran, Morris and Morris 2012 (<span class="math inline">\(16p\)</span>); Ghaderpour and Morris 2011 (<span class="math inline">\(27p\)</span>, <span class="math inline">\(30p\)</span>)</td>
+</tr>
+<tr>
+<td><span class="math inline">\(kpq\)</span> with <span class="math inline">\(k &lt; 6\)</span></td>
+<td>Kutnar, Marušič, Morris, Morris and Šparl 2012</td>
+</tr>
+<tr>
+<td><span class="math inline">\(6pq\)</span></td>
+<td>Morris and Wilk 2020</td>
+</tr>
+<tr>
+<td><span class="math inline">\(8pq\)</span></td>
+<td>Abedi, Morris, Rezaee and Salarian 2023 (computer-assisted)</td>
+</tr>
+<tr>
+<td><span class="math inline">\(pqr\)</span></td>
+<td>Kutnar, Marušič, Morris, Morris and Šparl 2012</td>
+</tr>
+<tr>
+<td><span class="math inline">\(pqrs\)</span>, all odd</td>
+<td>Morris 2021</td>
+</tr>
+<tr>
+<td><span class="math inline">\(pqrs\)</span></td>
+<td>Lehner, Maghsoudi and Miraftab 2026</td>
+</tr>
+<tr>
+<td><span class="math inline">\(kp^2\)</span> with <span class="math inline">\(k &lt; 5\)</span></td>
+<td>Kutnar, Marušič, Morris, Morris and Šparl 2012</td>
+</tr>
+<tr>
+<td><span class="math inline">\(kp^3\)</span> with <span class="math inline">\(k &lt; 3\)</span></td>
+<td>Kutnar, Marušič, Morris, Morris and Šparl 2012</td>
+</tr>
+</tbody>
+</table></div>
+<p>The general pattern is that a group of such an order is solvable with a normal Sylow subgroup, so the Factor Group Lemma applies to a chain of cyclic quotients, and the difficult cases are the few generating sets for which the lemma's hypothesis fails. The 2026 result of Lehner, Maghsoudi and Miraftab removes the oddness restriction from Morris's <span class="math inline">\(pqrs\)</span> theorem and is the first order result covering a family with four prime factors and even order.</p>
+<h3 id="54-dihedral-and-generalized-dihedral-groups">5.4 Dihedral and generalized dihedral groups</h3>
+<p>Conjecture C is open for dihedral groups <span class="math inline">\(D_{2n}\)</span>, a fact that is often cited as evidence of how little is understood. Known cases:</p>
+<ul>
+<li>Alspach and Zhang (1989): every cubic Cayley graph on a dihedral group is Hamiltonian, via brick products.</li>
+<li>Alspach, Chen and Dean (2010): every connected Cayley graph on a generalized dihedral group has a Hamiltonian path; when the order is divisible by 4 and the degree is at least 3 the graph is Hamilton-connected or, if bipartite, Hamilton-laceable. In particular Conjecture C holds for <span class="math inline">\(D_{2n}\)</span> with <span class="math inline">\(n\)</span> even.</li>
+<li>The case <span class="math inline">\(n\)</span> odd remains open. A 2018 preprint claiming the general generalized dihedral case was withdrawn by its authors because of an error.</li>
+<li>Miraftab (2022) treated generalized quasi-dihedral groups.</li>
+</ul>
+<h3 id="55-symmetric-groups-and-combinatorial-generation">5.5 Symmetric groups and combinatorial generation</h3>
+<p>Cayley graphs on <span class="math inline">\(S_n\)</span> are the natural home of permutation generation algorithms, and results here usually come with efficient listing algorithms.</p>
+<ul>
+<li>Adjacent transpositions <span class="math inline">\((i, i+1)\)</span>: the Steinhaus–Johnson–Trotter algorithm produces a Hamiltonian cycle in the permutohedron. Conway, Sloane and Wilks (1989) extended this to Coxeter generators of any finite reflection group.</li>
+<li>Any set of transpositions forming a tree on <span class="math inline">\(\{1, \dots, n\}\)</span>: Kompel'makher and Liskovets (1975) proved Hamiltonicity, and Tchuente (1982) proved Hamilton-laceability for any connected set of transpositions.</li>
+<li>A long cycle <span class="math inline">\(\sigma = (1\,2\,\cdots\,n)\)</span> and a transposition <span class="math inline">\(\tau = (1\,2)\)</span>: the undirected graph is Hamiltonian (Compton and Williamson 1993). The <em>directed</em> sigma–tau digraph, generated by <span class="math inline">\(\sigma\)</span> and <span class="math inline">\(\tau\)</span> without inverses, was Knuth's problem rated 48 out of 50 in difficulty. Rankin's theorem shows it has no directed Hamiltonian cycle for even <span class="math inline">\(n\)</span>. Sawada and Williams (2018, 2020) gave a directed Hamiltonian path for every <span class="math inline">\(n\)</span> and a directed Hamiltonian cycle for every odd <span class="math inline">\(n\)</span>, with an <span class="math inline">\(O(n)\)</span>-time successor rule, settling a problem of Nijenhuis and Wilf open since the 1970s.</li>
+<li>The involutions <span class="math inline">\((1\,2)\)</span>, <span class="math inline">\((1\,2)(3\,4)\cdots\)</span> and <span class="math inline">\((2\,3)(4\,5)\cdots\)</span>: Hamiltonian by the Rapaport-Strasser lemma.</li>
+</ul>
+<p>Beyond these special generating sets, Conjecture C is open for <span class="math inline">\(S_n\)</span> even with two generators.</p>
+<h3 id="56-generating-sets-with-prescribed-relations">5.6 Generating sets with prescribed relations</h3>
+<p>A few lemmas prove Hamiltonicity from relations among the generators alone, for every finite group.</p>
+<ul>
+<li><strong>Rankin.</strong> If <span class="math inline">\(S = \{a, b\}\)</span> (with inverses) and <span class="math inline">\((ab)^2 = 1\)</span>, then <span class="math inline">\(\mathrm{Cay}(G,S)\)</span> is Hamiltonian.</li>
+<li><strong>Rapaport-Strasser (1959).</strong> If <span class="math inline">\(S = \{a, b, c\}\)</span> consists of three involutions with <span class="math inline">\(ab = ba\)</span>, then <span class="math inline">\(\mathrm{Cay}(G,S)\)</span> is Hamiltonian.</li>
+<li><strong>Pak and Radoičić (2009).</strong> If <span class="math inline">\(S = \{a, b, c\}\)</span> with <span class="math inline">\(a^2 = 1\)</span> and <span class="math inline">\(c = a^{-1} b a\)</span>, then <span class="math inline">\(\mathrm{Cay}(G,S)\)</span> is Hamiltonian.</li>
+<li><strong>Glover and Marušič (2007).</strong> Let <span class="math inline">\(G\)</span> have a <span class="math inline">\((2,s,3)\)</span>-presentation, meaning <span class="math inline">\(G = \langle a, b \rangle\)</span> with <span class="math inline">\(a^2 = b^s = (ab)^3 = 1\)</span>, and let <span class="math inline">\(X = \mathrm{Cay}(G, \{a, b, b^{-1}\})\)</span>. If <span class="math inline">\(|G| \equiv 2 \pmod 4\)</span> then <span class="math inline">\(X\)</span> is Hamiltonian; if <span class="math inline">\(|G| \equiv 0 \pmod 4\)</span> then <span class="math inline">\(X\)</span> has a cycle through all but two vertices and hence a Hamiltonian path. Glover, Kutnar and Marušič (2009) obtained Hamiltonian cycles when <span class="math inline">\(s \equiv 0 \pmod 4\)</span>, and Glover, Kutnar, Malnič and Marušič (2012) when <span class="math inline">\(s\)</span> is odd, leaving open only <span class="math inline">\(s \equiv 2 \pmod 4\)</span> with <span class="math inline">\(|G| \equiv 0 \pmod 4\)</span>. The proofs build a Cayley map of <span class="math inline">\(X\)</span> on a surface and find a "tree of faces" whose boundary is the required cycle.</li>
+<li><strong>Stong (1987).</strong> The Cayley graph of the wreath product <span class="math inline">\(\mathbb{Z}_m \wr \mathbb{Z}_n\)</span> with its natural generating set is Hamiltonian when <span class="math inline">\(m\)</span> is even or <span class="math inline">\(m = 3\)</span>. The case <span class="math inline">\(m = 2\)</span> is the cube-connected cycles network.</li>
+</ul>
+<p>Using the classification of finite simple groups, Pak and Radoičić proved that every finite group <span class="math inline">\(G\)</span> with <span class="math inline">\(|G| \ge 3\)</span> has a generating set <span class="math inline">\(S\)</span> with <span class="math inline">\(|S| \le \log_2 |G|\)</span> for which <span class="math inline">\(\mathrm{Cay}(G,S)\)</span> is Hamiltonian, and more precisely one with <span class="math inline">\(|S| \le r(G) + 2m(G)\)</span> where <span class="math inline">\(r(G)\)</span> and <span class="math inline">\(m(G)\)</span> count the abelian and nonabelian composition factors. The bound is sharp for elementary abelian 2-groups and for simple groups. They also constructed explicit cubic Hamiltonian expanders as Cayley graphs of <span class="math inline">\(\mathrm{PSL}(2,p)\)</span> on three involutions. Babai's question of whether every finite group has a <em>minimum</em> generating set whose Cayley graph is Hamiltonian is open.</p>
+<h3 id="57-dense-and-pseudo-random-cayley-graphs">5.7 Dense and pseudo-random Cayley graphs</h3>
+<p>The results in this subsection come from extremal and probabilistic combinatorics rather than group theory, and they are the only ones that apply to arbitrary groups with large generating sets.</p>
+<ul>
+<li><strong>Dense vertex-transitive graphs.</strong> Christofides, Hladký and Máthé (2014) proved that for every <span class="math inline">\(\varepsilon &gt; 0\)</span> there is <span class="math inline">\(n_0\)</span> such that every connected vertex-transitive graph on <span class="math inline">\(n \ge n_0\)</span> vertices with degree at least <span class="math inline">\(\varepsilon n\)</span> has a Hamiltonian cycle, and gave a polynomial-time algorithm to find one. The proof uses Szemerédi's regularity lemma.</li>
+<li><strong>Moderately dense Cayley graphs.</strong> Bedert, Draganić, Müyesser and Pavez-Signé (2026) proved that there is an absolute constant <span class="math inline">\(c &gt; 0\)</span> such that every large connected Cayley graph on <span class="math inline">\(n\)</span> vertices with degree at least <span class="math inline">\(n^{1-c}\)</span> is Hamiltonian. They replace the regularity lemma by an arithmetic regularity lemma specialized to Cayley graphs together with mild spectral expansion.</li>
+<li><strong>Random generating sets.</strong> Krivelevich and Sudakov (2003) proved that <span class="math inline">\((n,d,\lambda)\)</span>-graphs with <span class="math inline">\(d/\lambda \ge (\log n)^{1+o(1)}\)</span> are Hamiltonian, and deduced that a Cayley graph on <span class="math inline">\(G\)</span> with <span class="math inline">\(\Omega(\log^5 |G|)\)</span> random generators is Hamiltonian with high probability. Draganić, Montgomery, Munhá Correia, Pokrovskiy and Sudakov (2024) proved that <span class="math inline">\(d/\lambda \ge C\)</span> suffices for an absolute constant <span class="math inline">\(C\)</span>. Combined with the Alon–Roichman theorem that <span class="math inline">\(C&#39; \log |G|\)</span> random generators give a spectral gap, this shows that a Cayley graph on any finite group with <span class="math inline">\(O(\log |G|)\)</span> random generators is Hamiltonian with high probability, which is the conjecture Pak and Radoičić formulated as a plausible weakening of Conjecture C.</li>
+</ul>
+<h3 id="58-semisymmetric-and-other-symmetric-graphs">5.8 Semisymmetric and other symmetric graphs</h3>
+<p>Du and Yuan (2026) asked whether edge-transitivity alone forces Hamiltonicity. They proved that every connected semisymmetric graph, meaning regular, edge-transitive and not vertex-transitive, of order <span class="math inline">\(2pq\)</span> is Hamiltonian, as is every connected cubic semisymmetric graph on fewer than 3000 vertices, and posed the construction of a non-Hamiltonian semisymmetric graph as an open problem.</p>
+<h2 id="6-cayley-digraphs">6. Cayley digraphs</h2>
+<h3 id="61-rankins-theorem-and-non-hamiltonian-digraphs">6.1 Rankin's theorem and non-Hamiltonian digraphs</h3>
+<p>For abelian <span class="math inline">\(G = \langle a, b \rangle\)</span>, Rankin (1948) proved that <span class="math inline">\(\overrightarrow{\mathrm{Cay}}(G; a, b)\)</span> has a directed Hamiltonian cycle if and only if there are <span class="math inline">\(k, \ell \ge 0\)</span> with <span class="math inline">\(k + \ell = |G : \langle ab^{-1} \rangle|\)</span> and <span class="math inline">\(\langle a^k b^\ell \rangle = \langle ab^{-1} \rangle\)</span>. A consequence for general groups is that if <span class="math inline">\(ab^{-1}\)</span> has odd order and generates a subgroup of even index, there is no directed Hamiltonian cycle; this is the form that rules out an extent of Grandsire Triples and the even-<span class="math inline">\(n\)</span> sigma–tau cycle. A concrete family: <span class="math inline">\(\overrightarrow{\mathrm{Cay}}(\mathbb{Z}_n; a, a+1)\)</span> is non-Hamiltonian whenever <span class="math inline">\(\gcd(a,n) &gt; 1\)</span> and <span class="math inline">\(\gcd(a+1,n) &gt; 1\)</span>, for example <span class="math inline">\(\mathbb{Z}_6\)</span> with generators 2 and 3. Trotter and Erdős (1978) characterized the Hamiltonian Cartesian products of two directed cycles: <span class="math inline">\(\overrightarrow{\mathrm{Cay}}(\mathbb{Z}_m \times \mathbb{Z}_n; (1,0),(0,1))\)</span> is Hamiltonian if and only if <span class="math inline">\(\gcd(m,n) = d_1 + d_2\)</span> for positive integers with <span class="math inline">\(\gcd(m, d_1) = \gcd(n, d_2) = 1\)</span>.</p>
+<h3 id="62-positive-results-for-digraphs">6.2 Positive results for digraphs</h3>
+<ul>
+<li>Holsztyński and Strube (1978): every connected Cayley digraph on an abelian group has a directed Hamiltonian path, but every cyclic group whose order is not a prime power has a connected Cayley digraph with no directed Hamiltonian cycle.</li>
+<li>Witte (1986): every connected Cayley digraph on a <span class="math inline">\(p\)</span>-group has a directed Hamiltonian cycle.</li>
+<li>Morris (2012): every two-generated Cayley digraph on a nilpotent group has a directed Hamiltonian path.</li>
+<li>Morris (2013): if <span class="math inline">\(|[G,G]| &lt; 4\)</span> then every connected Cayley digraph on <span class="math inline">\(G\)</span> has a directed Hamiltonian path, and this fails for some groups with <span class="math inline">\(|[G,G]| \in \{4, 5\}\)</span>. The same paper constructs infinitely many connected two-generated Cayley digraphs with no directed Hamiltonian path in which both generators have arbitrarily large order.</li>
+<li>Curran and Witte (1985) settled Hamiltonian paths in Cartesian products of directed cycles.</li>
+</ul>
+<p>The directed setting therefore behaves like the digraph analogue of Babai's conjecture, and its main open question is a characterization of the Hamiltonian two-generated Cayley digraphs on nonabelian groups.</p>
+<h2 id="7-related-and-stronger-notions">7. Related and stronger notions</h2>
+<ul>
+<li><strong>Hamilton-connectedness.</strong> Chen and Quimpo's theorem for abelian groups and Alspach, Chen and Dean's theorem for generalized dihedral groups of order divisible by 4 show that in the settled cases one usually gets Hamiltonian paths between any two prescribed vertices, not merely one Hamiltonian cycle.</li>
+<li><strong>Hamilton decompositions.</strong> Alspach asked in 1984 whether every connected Cayley graph of even degree on an abelian group decomposes into Hamiltonian cycles; this is open. Alspach, Bryant and Dyer proved it for vertex-transitive graphs of order <span class="math inline">\(p^2\)</span>. Bryant and Dean (2015) showed that the analogous statement for vertex-transitive graphs is false: there are infinitely many connected vertex-transitive graphs, including Cayley graphs of arbitrarily large degree, with no Hamilton decomposition. Their examples generalize the triangle-replacement construction behind the known non-Hamiltonian examples.</li>
+<li><strong>Unique Hamiltonian cycles.</strong> Miraftab and Morris (2025) determined all vertex-transitive graphs with finitely many ends that have exactly one Hamiltonian cycle (or Hamiltonian circle, in the infinite case).</li>
+<li><strong>Symmetric Hamiltonian cycles.</strong> The Hamilton compression of a graph, introduced by Gregor, Merino and Mütze, measures the largest rotational symmetry a Hamiltonian cycle can have. Infinite families of vertex-transitive graphs with prescribed compression were constructed in 2024, and Baligács and coauthors (2025) studied symmetry classes of Hamiltonian cycles from a computational viewpoint.</li>
+<li><strong>Infinite graphs.</strong> For infinite Cayley graphs the analogue of a Hamiltonian cycle is a Hamiltonian circle in the Freudenthal compactification. Several of the finite results above, including Durnberger's theorem, have been extended to this setting.</li>
+</ul>
+<h2 id="8-computational-evidence">8. Computational evidence</h2>
+<p>The census of Potočnik, Spiga and Verret of all connected cubic vertex-transitive graphs on at most 1280 vertices contains 111,360 graphs. Its tabulated Hamiltonicity data list no non-Hamiltonian graphs other than the four cubic exceptions of Section 1.3. Similar checks on censuses of Cayley graphs and of small vertex-transitive graphs of higher degree have produced no new exceptions. Pak and Radoičić report that the two-generated Cayley graph on <span class="math inline">\(A_5^2\)</span> with one generator an involution was verified Hamiltonian by Cook and Ruskey, and they single out Hall's two-generated group <span class="math inline">\(A_5^{19}\)</span> as a "beautiful but computationally unapproachable" potential counterexample. A 2024 arXiv preprint claims a proof of Conjecture B for all graphs of odd order; it has not appeared in a refereed venue and is not cited by the subsequent literature, so it should be regarded as unverified.</p>
+<h2 id="9-open-problems">9. Open problems</h2>
+<ol type="1">
+<li>Conjectures A, B and C in full generality, and whether one counterexample to A would generate infinitely many.</li>
+<li>Decide between Babai's conjecture and Thomassen's conjecture; more modestly, prove or disprove Mohar's 2-walk conjecture.</li>
+<li>Raise the longest-cycle exponent above <span class="math inline">\(2/3\)</span>, which is a barrier for the current methods, and prove a linear lower bound <span class="math inline">\(cn\)</span> for some fixed <span class="math inline">\(c &gt; 0\)</span>.</li>
+<li>Conjecture C for dihedral groups <span class="math inline">\(D_{2n}\)</span> with <span class="math inline">\(n\)</span> odd.</li>
+<li>Conjecture C for cubic Cayley graphs, including the <span class="math inline">\((2,s,3)\)</span> case with <span class="math inline">\(s \equiv 2 \pmod 4\)</span> and <span class="math inline">\(|G| \equiv 0 \pmod 4\)</span>, and for two-generated Cayley graphs of <span class="math inline">\(S_n\)</span>.</li>
+<li>Babai's question: does every finite group have a minimum generating set whose Cayley graph is Hamiltonian?</li>
+<li>Lower the degree threshold <span class="math inline">\(n^{1-c}\)</span> for Cayley graphs, and extend the moderately dense result from Cayley graphs to all vertex-transitive graphs.</li>
+<li>Complete the order program: Hamiltonian cycles in vertex-transitive graphs of order <span class="math inline">\(5p\)</span>, <span class="math inline">\(p^5\)</span> and imprimitive <span class="math inline">\(2pq\)</span>, and Cayley graphs of the orders excluded in Section 5.3, such as <span class="math inline">\(24p\)</span>.</li>
+<li>Conjecture C for all solvable groups, or at least for groups with cyclic commutator subgroup.</li>
+<li>Characterize the Hamiltonian two-generated Cayley digraphs on nonabelian groups.</li>
+</ol>
+<h2 id="references">References</h2>
+<p>Surveys and background:</p>
+<ul>
+<li>L. Babai, Automorphism groups, isomorphism, reconstruction, in <em>Handbook of Combinatorics</em> vol. 2, Elsevier, 1996, pp. 1447–1540.</li>
+<li>S. J. Curran and J. A. Gallian, Hamiltonian cycles and paths in Cayley graphs and digraphs: a survey, <em>Discrete Math.</em> 156 (1996) 1–18.</li>
+<li>D. Knuth, <em>The Art of Computer Programming</em>, vol. 4A, Section 7.2.1.2, Addison-Wesley, 2011.</li>
+<li>K. Kutnar and D. Marušič, Hamilton cycles and paths in vertex-transitive graphs: current directions, <em>Discrete Math.</em> 309 (2009) 5491–5500.</li>
+<li>G. H. J. Lanel et al., A survey on Hamiltonicity in Cayley graphs and digraphs on different groups, <em>Discrete Math. Algorithms Appl.</em> 11 (2019).</li>
+<li>L. Lovász, Problem 11, in <em>Combinatorial Structures and Their Applications</em>, Gordon and Breach, 1970.</li>
+<li>T. Mütze, Combinatorial Gray codes: an updated survey, <em>Electron. J. Combin.</em> DS26 (2023).</li>
+<li>I. Pak and R. Radoičić, Hamiltonian paths in Cayley graphs, <em>Discrete Math.</em> 309 (2009) 5501–5508.</li>
+<li>D. Witte and J. A. Gallian, A survey: Hamiltonian cycles in Cayley graphs, <em>Discrete Math.</em> 51 (1984) 293–304.</li>
+<li>Open Problem Garden, Hamiltonicity of Cayley graphs; B. Mohar, 2-walks in vertex-transitive graphs (problem page).</li>
+</ul>
+<p>Vertex-transitive graphs by order:</p>
+<ul>
+<li>B. Alspach, Hamiltonian cycles in vertex-transitive graphs of order 2p, <em>Congr. Numer.</em> 23 (1979) 131–139.</li>
+<li>D. Marušič and T. D. Parsons, Hamiltonian paths in vertex-symmetric graphs of order 5p, <em>Discrete Math.</em> 42 (1982) 227–242; order 4p, <em>Discrete Math.</em> 43 (1983) 91–96.</li>
+<li>D. Marušič, Vertex transitive graphs and digraphs of order <span class="math inline">\(p^k\)</span>, <em>Ann. Discrete Math.</em> 27 (1985) 115–128.</li>
+<li>Y.-Q. Chen, On Hamiltonicity of vertex-transitive graphs and digraphs of order <span class="math inline">\(p^4\)</span>, <em>J. Combin. Theory Ser. B</em> 72 (1998) 110–121.</li>
+<li>K. Kutnar and D. Marušič, Hamiltonicity of vertex-transitive graphs of order 4p, <em>European J. Combin.</em> 29 (2008) 423–438.</li>
+<li>K. Kutnar and P. Šparl, Hamilton paths and cycles in vertex-transitive graphs of order 6p, <em>Discrete Math.</em> 309 (2009) 5444–5460.</li>
+<li>K. Kutnar, D. Marušič and C. Zhang, Hamilton paths in vertex-transitive graphs of order 10p, <em>European J. Combin.</em> 33 (2012) 1043–1077.</li>
+<li>S. Du, K. Kutnar and D. Marušič, Resolving the Hamiltonian problem for vertex-transitive graphs of order a product of two primes, <em>Combinatorica</em> 41 (2021) 507–543; arXiv:1808.08553.</li>
+<li>S. Du, Y. Tian and H. Yu, Hamilton cycles in primitive graphs of order 2rs, arXiv:2203.13460 (2022).</li>
+<li>S. Du, W. Luo and H. Yu, On Hamilton paths in vertex-transitive graphs of order 10p, arXiv:2411.17780 (2024).</li>
+<li>S. Du and T. Zhou, Hamilton cycles in vertex-transitive graphs of order 6p, <em>Discrete Appl. Math.</em> 369 (2025); arXiv:2409.06138.</li>
+<li>T. Zhou, On Hamilton cycles in connected vertex-transitive graphs of order 2pq, arXiv:2608.02349 (2026).</li>
+</ul>
+<p>Long cycles:</p>
+<ul>
+<li>L. Babai, Long cycles in vertex-transitive graphs, <em>J. Graph Theory</em> 3 (1979) 301–304.</li>
+<li>M. DeVos, Longer cycles in vertex transitive graphs, arXiv:2302.04255 (2023).</li>
+<li>C. Groenland, S. Longbrake, R. Steiner, J. Turcotte and L. Yepremyan, Longest cycles in vertex-transitive and highly connected graphs, <em>Bull. London Math. Soc.</em> (2025); arXiv:2408.04618.</li>
+<li>S. Norin, R. Steiner, S. Thomassé and P. Wollan, Intersections of longest cycles in vertex-transitive and highly connected graphs, arXiv:2508.17438 (2025).</li>
+<li>M. Bucić, M. Christoph, A. Pokrovskiy and R. Steiner, Towards the Lovász conjecture via sublinear expanders, arXiv:2606.09742 (2026).</li>
+<li>M. Bucić, K. Hendrey, B. Mohar, R. Steiner and L. Yepremyan, Long cycles in vertex transitive digraphs, arXiv:2602.16333 (2026).</li>
+<li>B. Li and A. Methuku, Long directed cycles in vertex-transitive digraphs, arXiv:2607.05807 (2026).</li>
+</ul>
+<p>Cayley graphs, algebraic methods:</p>
+<ul>
+<li>C. C. Chen and N. F. Quimpo, On strongly Hamiltonian abelian group graphs, <em>Lecture Notes in Math.</em> 884 (1981) 23–34.</li>
+<li>D. Witte, Cayley digraphs of prime-power order are Hamiltonian, <em>J. Combin. Theory Ser. B</em> 40 (1986) 107–112.</li>
+<li>D. Marušič, Hamiltonian circuits in Cayley graphs, <em>Discrete Math.</em> 46 (1983) 49–54.</li>
+<li>E. Durnberger, Connected Cayley graphs of semidirect products of cyclic groups of prime order by abelian groups are Hamiltonian, <em>Discrete Math.</em> 46 (1983) 55–68.</li>
+<li>K. Keating and D. Witte, On Hamilton cycles in Cayley graphs in groups with cyclic commutator subgroup, <em>Ann. Discrete Math.</em> 27 (1985) 89–102.</li>
+<li>E. Ghaderpour and D. W. Morris, Cayley graphs on nilpotent groups with cyclic commutator subgroup are Hamiltonian, <em>Ars Math. Contemp.</em> 7 (2014) 55–72; arXiv:1111.6216.</li>
+<li>D. W. Morris, Odd-order Cayley graphs with commutator subgroup of order pq are Hamiltonian, <em>Ars Math. Contemp.</em> 8 (2015) 1–28; arXiv:1205.0087.</li>
+<li>D. W. Morris, Cayley graphs on groups with commutator subgroup of order 2p are Hamiltonian, <em>Art Discrete Appl. Math.</em> 1 (2018); arXiv:1703.06377.</li>
+<li>K. Kutnar, D. Marušič, D. W. Morris, J. Morris and P. Šparl, Hamiltonian cycles in Cayley graphs whose order has few prime factors, <em>Ars Math. Contemp.</em> 5 (2012) 27–71; arXiv:1009.5795.</li>
+<li>E. Ghaderpour and D. W. Morris, Cayley graphs of order 27p are Hamiltonian, <em>Int. J. Combin.</em> (2011); Cayley graphs of order 30p are Hamiltonian, <em>Discrete Math.</em> 312 (2012); arXiv:1101.4322, arXiv:1102.5156.</li>
+<li>S. J. Curran, D. W. Morris and J. Morris, Cayley graphs of order 16p are Hamiltonian, <em>Ars Math. Contemp.</em> 5 (2012); arXiv:1104.0081.</li>
+<li>D. W. Morris and K. Wilk, Cayley graphs of order 6pq are Hamiltonian, arXiv:2009.10055 (2020).</li>
+<li>D. W. Morris, On Hamiltonian cycles in Cayley graphs of order pqrs, arXiv:2107.14787 (2021).</li>
+<li>F. Abedi, D. W. Morris, J. Rezaee and M. R. Salarian, Cayley graphs of order 8pq are Hamiltonian, arXiv:2304.03348 (2023).</li>
+<li>F. Lehner, F. Maghsoudi and B. Miraftab, Cayley graphs of order pqrs are Hamiltonian, arXiv:2607.14440 (2026).</li>
+<li>F. Lehner, F. Maghsoudi and B. Miraftab, Hamiltonicity of transitive graphs whose automorphism group has <span class="math inline">\(\mathbb{Z}_p\)</span> as commutator subgroup, arXiv:2412.08105 (2024).</li>
+<li>B. Alspach and C. Q. Zhang, Hamilton cycles in cubic Cayley graphs on dihedral groups, <em>Ars Combin.</em> 28 (1989) 101–108.</li>
+<li>B. Alspach, C. C. Chen and M. Dean, Hamilton paths in Cayley graphs on generalized dihedral groups, <em>Ars Math. Contemp.</em> 3 (2010) 29–47.</li>
+<li>B. Miraftab, Hamiltonicity in generalized quasi-dihedral groups, arXiv:2204.05484 (2022).</li>
+<li>H. H. Glover and D. Marušič, Hamiltonicity of cubic Cayley graphs, <em>J. Eur. Math. Soc.</em> 9 (2007) 775–787; arXiv:math/0508647.</li>
+<li>H. H. Glover, K. Kutnar and D. Marušič, Hamiltonian cycles in cubic Cayley graphs: the (2,4k,3) case, <em>J. Algebraic Combin.</em> 30 (2009) 447–475.</li>
+<li>H. H. Glover, K. Kutnar, A. Malnič and D. Marušič, Hamilton cycles in (2,odd,3)-Cayley graphs, <em>Proc. London Math. Soc.</em> 104 (2012) 1171–1197.</li>
+<li>E. Rapaport-Strasser, Cayley color groups and Hamilton lines, <em>Scripta Math.</em> 24 (1959) 51–58.</li>
+<li>R. Stong, On Hamiltonian cycles in Cayley graphs of wreath products, <em>Discrete Math.</em> 65 (1987) 75–80.</li>
+<li>V. L. Kompel'makher and V. A. Liskovets, Sequential generation of arrangements by means of a basis of transpositions, <em>Kibernetika</em> 3 (1975) 17–21.</li>
+<li>M. Tchuente, Generation of permutations by graphical exchanges, <em>Ars Combin.</em> 14 (1982) 115–122.</li>
+<li>J. H. Conway, N. J. A. Sloane and A. R. Wilks, Gray codes for reflection groups, <em>Graphs Combin.</em> 5 (1989) 315–325.</li>
+<li>R. C. Compton and S. G. Williamson, Doubly adjacent Gray codes for the symmetric group, <em>Linear Multilinear Algebra</em> 35 (1993) 237–293.</li>
+<li>J. Sawada and A. Williams, A Hamilton path for the sigma-tau problem, <em>SODA 2018</em>; Solving the sigma-tau problem, <em>ACM Trans. Algorithms</em> 16 (2020).</li>
+</ul>
+<p>Dense, pseudo-random and random Cayley graphs:</p>
+<ul>
+<li>D. Christofides, J. Hladký and A. Máthé, Hamilton cycles in dense vertex-transitive graphs, <em>J. Combin. Theory Ser. B</em> 109 (2014) 34–72; arXiv:1008.2193.</li>
+<li>B. Bedert, N. Draganić, A. Müyesser and M. Pavez-Signé, The Lovász conjecture holds for moderately dense Cayley graphs, arXiv:2603.08675 (2026).</li>
+<li>M. Krivelevich and B. Sudakov, Sparse pseudo-random graphs are Hamiltonian, <em>J. Graph Theory</em> 42 (2003) 17–33.</li>
+<li>N. Draganić, R. Montgomery, D. Munhá Correia, A. Pokrovskiy and B. Sudakov, Hamiltonicity of expanders: optimal bounds and applications, arXiv:2402.06603 (2024).</li>
+<li>N. Alon and Y. Roichman, Random Cayley graphs and expanders, <em>Random Structures Algorithms</em> 5 (1994) 271–284.</li>
+</ul>
+<p>Digraphs:</p>
+<ul>
+<li>R. A. Rankin, A campanological problem in group theory, <em>Proc. Cambridge Philos. Soc.</em> 44 (1948) 17–25; R. G. Swan, A simple proof of Rankin's campanological theorem, <em>Amer. Math. Monthly</em> 106 (1999) 159–161.</li>
+<li>W. T. Trotter and P. Erdős, When the Cartesian product of directed cycles is Hamiltonian, <em>J. Graph Theory</em> 2 (1978) 137–142.</li>
+<li>W. Holsztyński and R. F. E. Strube, Paths and circuits in finite groups, <em>Discrete Math.</em> 22 (1978) 263–272.</li>
+<li>S. J. Curran and D. Witte, Hamilton paths in Cartesian products of directed cycles, <em>Ann. Discrete Math.</em> 27 (1985) 35–74.</li>
+<li>D. W. Morris, 2-generated Cayley digraphs on nilpotent groups have Hamiltonian paths, <em>Contrib. Discrete Math.</em> 7 (2012) 41–47.</li>
+<li>D. W. Morris, On Cayley digraphs that do not have Hamiltonian paths, <em>Int. J. Combin.</em> (2013); arXiv:1306.5443.</li>
+</ul>
+<p>Related notions and data:</p>
+<ul>
+<li>D. Bryant and M. Dean, Vertex-transitive graphs that have no Hamilton decomposition, <em>J. Combin. Theory Ser. B</em> 114 (2015) 237–246; arXiv:1408.5211.</li>
+<li>B. Miraftab and D. W. Morris, On vertex-transitive graphs with a unique Hamiltonian cycle, <em>J. Graph Theory</em> 108 (2025) 65–90.</li>
+<li>S. Du and K. Yuan, Hamilton cycles in semisymmetric graphs, arXiv:2602.14388 (2026).</li>
+<li>P. Potočnik, P. Spiga and G. Verret, Cubic vertex-transitive graphs on up to 1280 vertices, <em>J. Symbolic Comput.</em> 50 (2013) 465–477; census data on Zenodo.</li>
+<li>B. Alspach, The classification of Hamiltonian generalized Petersen graphs, <em>J. Combin. Theory Ser. B</em> 34 (1983) 293–312.</li>
+<li>M. E. Watkins, Connectivity of transitive graphs, <em>J. Combin. Theory</em> 8 (1970) 23–29.</li>
+</ul>
+
+</main>
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>
+</body>
+</html>

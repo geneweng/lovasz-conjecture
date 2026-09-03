@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Odd Dihedral Case</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap">
+<style>
+:root {
+  --paper:#F6F7F5; --ink:#1A2230; --muted:#5B6470; --rule:#D5D9D3; --soft:#ECEEEA;
+  --accent:#1E6E73; --accent-ink:#155257; --open:#8A4B1A;
+  --display:"Fraunces", Georgia, "Times New Roman", serif;
+  --body:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --ui:"IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:#151A1F; --ink:#E6E8E4; --muted:#9AA3AD; --rule:#2C343C; --soft:#1D242B;
+    --accent:#5FC1C5; --accent-ink:#8ED6D9; --open:#E0A06A; color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+body { margin:0; background:var(--paper); color:var(--ink); font-family:var(--body); font-size:17px; line-height:1.6; }
+a { color:var(--accent-ink); text-decoration-thickness:1px; text-underline-offset:2px; }
+a:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+.wrap { max-width:1120px; margin:0 auto; padding:0 24px 96px; }
+nav.site { display:flex; gap:22px; padding:18px 0 0; font-family:var(--ui); font-size:13px; letter-spacing:.04em; text-transform:uppercase; }
+nav.site a { color:var(--muted); text-decoration:none; }
+nav.site a:hover { color:var(--accent-ink); }
+header.mast { display:grid; grid-template-columns:1fr auto; gap:32px; align-items:end; padding:40px 0 32px; border-bottom:1px solid var(--rule); }
+.eyebrow { font-family:var(--ui); font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin:0 0 14px; }
+header h1 { font-family:var(--display); font-weight:500; font-size:clamp(34px, 4.6vw, 54px); line-height:1.08; margin:0 0 18px; text-wrap:balance; max-width:22ch; letter-spacing:-.01em; }
+.dek { font-size:19px; color:var(--muted); max-width:58ch; margin:0; text-wrap:pretty; }
+.petersen { width:168px; height:168px; }
+.petersen line { stroke:var(--accent); stroke-width:2.2; stroke-linecap:round; }
+.petersen circle { fill:var(--paper); stroke:var(--ink); stroke-width:2.2; }
+.grid { display:grid; grid-template-columns:220px minmax(0,1fr); gap:56px; padding-top:40px; }
+nav.toc { position:sticky; top:24px; align-self:start; font-family:var(--ui); font-size:13.5px; line-height:1.45; }
+nav.toc .eyebrow { margin-bottom:10px; }
+nav.toc ol { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:7px; }
+nav.toc a { color:var(--muted); text-decoration:none; }
+nav.toc a:hover { color:var(--accent-ink); text-decoration:underline; }
+main { max-width:68ch; min-width:0; }
+main h2 { font-family:var(--display); font-weight:600; font-size:27px; line-height:1.2; margin:56px 0 14px; text-wrap:balance; letter-spacing:-.005em; }
+main h2:first-child { margin-top:0; }
+main h3 { font-family:var(--ui); font-weight:600; font-size:14px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent-ink); margin:34px 0 8px; }
+main p { margin:0 0 16px; text-wrap:pretty; }
+main ul, main ol { padding-left:1.3em; margin:0 0 18px; }
+main li { margin:0 0 7px; }
+main li::marker { color:var(--muted); font-family:var(--ui); font-size:.9em; }
+main strong { font-weight:600; }
+main code { font-family:"IBM Plex Mono", ui-monospace, Menlo, monospace; font-size:.88em; background:var(--soft); padding:1px 5px; border-radius:3px; }
+main pre { background:var(--soft); padding:14px 16px; overflow-x:auto; border-radius:4px; font-size:14px; line-height:1.5; }
+main pre code { background:none; padding:0; }
+.tablewrap { overflow-x:auto; margin:8px 0 26px; border-top:2px solid var(--ink); border-bottom:1px solid var(--rule); }
+table { border-collapse:collapse; width:100%; font-family:var(--ui); font-size:14px; line-height:1.4; font-variant-numeric:tabular-nums; }
+th { text-align:left; font-weight:600; font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); padding:10px 14px 8px 0; border-bottom:1px solid var(--rule); }
+td { vertical-align:top; padding:9px 14px 9px 0; border-bottom:1px solid var(--rule); }
+tr:last-child td { border-bottom:0; }
+#references ~ p { font-family:var(--ui); font-size:13px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin:28px 0 8px; }
+#references ~ ul { list-style:none; padding:0; font-size:15px; }
+#references ~ ul li { padding:6px 0 6px 18px; text-indent:-18px; border-bottom:1px solid var(--soft); }
+mjx-container { font-size:104% !important; }
+mjx-container[display="true"] { overflow-x:auto; }
+@media (max-width: 860px) {
+  .grid { grid-template-columns:1fr; gap:32px; }
+  nav.toc { position:static; border-bottom:1px solid var(--rule); padding-bottom:20px; }
+  nav.toc ol { flex-direction:row; flex-wrap:wrap; gap:6px 18px; }
+  header.mast { grid-template-columns:1fr; }
+  .petersen { width:120px; height:120px; }
+  body { font-size:16px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav class="site"><a href="index.html">Progress</a><a href="survey.html">Survey</a><a href="dihedral.html">Dihedral notes</a><a href="https://github.com/geneweng/lovasz-conjecture">Repository</a></nav>
+<header class="mast">
+  <div>
+    <p class="eyebrow">Working notes · Cayley graphs on D₂ₙ, n odd</p>
+    <h1>The Odd Dihedral Case</h1>
+    <p class="dek">Reductions, two theorems with proofs, certificate code, and what the literature already knew.</p>
+  </div>
+  <svg class="petersen" viewBox="-104 -104 208 208" role="img" aria-label="The Petersen graph">
+<line x1="0.0" y1="-90.0" x2="85.6" y2="-27.8"/>
+<line x1="0.0" y1="-90.0" x2="0.0" y2="-42.0"/>
+<line x1="0.0" y1="-42.0" x2="24.7" y2="34.0"/>
+<line x1="85.6" y1="-27.8" x2="52.9" y2="72.8"/>
+<line x1="85.6" y1="-27.8" x2="39.9" y2="-13.0"/>
+<line x1="39.9" y1="-13.0" x2="-24.7" y2="34.0"/>
+<line x1="52.9" y1="72.8" x2="-52.9" y2="72.8"/>
+<line x1="52.9" y1="72.8" x2="24.7" y2="34.0"/>
+<line x1="24.7" y1="34.0" x2="-39.9" y2="-13.0"/>
+<line x1="-52.9" y1="72.8" x2="-85.6" y2="-27.8"/>
+<line x1="-52.9" y1="72.8" x2="-24.7" y2="34.0"/>
+<line x1="-24.7" y1="34.0" x2="0.0" y2="-42.0"/>
+<line x1="-85.6" y1="-27.8" x2="0.0" y2="-90.0"/>
+<line x1="-85.6" y1="-27.8" x2="-39.9" y2="-13.0"/>
+<line x1="-39.9" y1="-13.0" x2="39.9" y2="-13.0"/>
+<circle cx="0.0" cy="-90.0" r="5"/>
+<circle cx="85.6" cy="-27.8" r="5"/>
+<circle cx="52.9" cy="72.8" r="5"/>
+<circle cx="-52.9" cy="72.8" r="5"/>
+<circle cx="-85.6" cy="-27.8" r="5"/>
+<circle cx="0.0" cy="-42.0" r="5"/>
+<circle cx="39.9" cy="-13.0" r="5"/>
+<circle cx="24.7" cy="34.0" r="5"/>
+<circle cx="-24.7" cy="34.0" r="5"/>
+<circle cx="-39.9" cy="-13.0" r="5"/>
+</svg>
+</header>
+<div class="grid">
+<nav class="toc" aria-label="Sections">
+  <p class="eyebrow">Sections</p>
+  <ol>
+  <li><a href="#1-setup">1. Setup</a></li>
+<li><a href="#2-easy-lemmas">2. Easy lemmas</a></li>
+<li><a href="#3-the-prism-theorem-a-rotation-in-s-suffices">3. The prism theorem: a rotation in S suffices</a></li>
+<li><a href="#4-what-remains-haar-graphs-of-odd-cyclic-groups">4. What remains: Haar graphs of odd cyclic groups</a></li>
+<li><a href="#4a-the-factor-group-lemma-at-a-prime">4a. The factor group lemma at a prime</a></li>
+<li><a href="#5-computations">5. Computations</a></li>
+<li><a href="#6-literature-check-done">6. Literature check (done)</a></li>
+<li><a href="#7-next-steps">7. Next steps</a></li>
+  </ol>
+</nav>
+<main>
+<p>Working notes. Goal: settle whether every connected Cayley graph on D₂ₙ with n odd has a Hamiltonian cycle. The even case was settled by Alspach, Chen and Dean (2010).</p>
+<h2 id="1-setup">1. Setup</h2>
+<p>D₂ₙ = ⟨r, s | rⁿ = s² = 1, srs = r⁻¹⟩. Elements are rotations rⁱ and reflections rⁱs. A symmetric generating set is S = R ∪ T, where R ⊆ Zₙ ∖ {0} is the set of rotation exponents (R = −R) and T ⊆ Zₙ is the set of reflection exponents; every reflection is an involution. Write L = {rⁱ} and R-side = {rⁱs} and label vertices i_L and i_R.</p>
+<p>Right multiplication gives the edges:</p>
+<ul>
+<li>rotation r^b: i_L ~ (i+b)_L and i_R ~ (i−b)_R;</li>
+<li>reflection r^t s: i_L ~ (i+t)_R.</li>
+</ul>
+<p>So each side induces the circulant Circ(n, R), and each t ∈ T contributes the perfect matching i_L ~ (i+t)_R.</p>
+<p><strong>Connectivity.</strong> S generates D₂ₙ iff T ≠ ∅ and R ∪ (T − T) generates Zₙ.</p>
+<p><strong>Equivalence.</strong> For n odd, Aut(D₂ₙ) consists of the maps r ↦ rᵘ, s ↦ rᵛs with u a unit mod n. It sends (R, T) to (uR, uT + v), and Cayley graphs of equivalent sets are isomorphic. In particular we may assume 0 ∈ T.</p>
+<p><strong>Prior results that apply.</strong> [D₂ₙ, D₂ₙ] = ⟨r²⟩ = ⟨r⟩ ≅ Zₙ for n odd, so Keating–Witte covers n = pᵃ. The few-prime-factor theorems (survey, Section 5.3) cover all orders 2n with n &lt; 135 and many beyond; <code>coverage.py</code> lists the odd n &lt; 400 not covered by any of them:</p>
+<pre><code>135, 147, 175, 189, 225, 245, 275, 297, 315, 325, 351, 363, 375</code></pre>
+<p>So D₂₇₀ (n = 135 = 3³·5) is the smallest dihedral group of odd n for which the question is open in the literature.</p>
+<h2 id="2-easy-lemmas">2. Easy lemmas</h2>
+<p><strong>Lemma 1 (unit difference).</strong> If t, t' ∈ T and t − t' is a unit mod n, then Cay(D₂ₙ, S) is Hamiltonian.</p>
+<p><em>Proof.</em> Alternating the reflections t and t' gives the closed walk 0_L, t_R, (t − t')_L, (2t − t')_R, … which returns to 0_L after 2n steps and visits 2n distinct vertices since t − t' generates Zₙ. ∎</p>
+<p><strong>Lemma 2 (no unit difference needs three primes).</strong> Let n be odd. If A ⊆ Zₙ has no unit difference and A − A generates Zₙ, then n has at least three distinct prime factors and |A| ≥ 3.</p>
+<p><em>Proof.</em> Let p₁, …, p_k be the distinct primes dividing n and map a ↦ (a mod p₁, …, a mod p_k). A difference a − a' is a non-unit iff the two images agree in some coordinate, and A − A generates Zₙ iff the images are not constant in any coordinate (the subgroup generated by A − A is dZₙ, and d = 1 iff no prime p_i divides every difference). If |A| = 2 the single difference is a non-unit, so A − A does not generate; hence |A| ≥ 3. If k = 1 all images agree in the only coordinate, so A − A ⊆ p₁Zₙ. If k = 2, agreement means "same row or same column" in the grid Z_{p₁} × Z_{p₂}. Take two distinct points a, b of A; say they share a row (they cannot share both a row and a column). Any third point c shares a row or a column with each of a and b. If c shares a column with a and a column with b, then a and b share a column, contradiction; if c shares a column with a and a row with b, then c = (row b, col a) = (row a, col a) = a, contradiction; symmetrically for the other mixed case. So c shares a row with both, i.e. lies in the row of a. Hence all of A lies in one row, the first coordinate is constant, and A − A does not generate. ∎</p>
+<p>For k = 3 hard sets exist: the residue patterns {(0,0,0), (0,1,1), (1,0,1)} and {(0,0,0), (0,1,1), (1,0,1), (1,1,0)} are pairwise agreeing and not constant in any coordinate.</p>
+<p><strong>Corollary.</strong> For n odd with at most two distinct prime factors, every generating set consisting only of reflections is handled by Lemma 1.</p>
+<h2 id="3-the-prism-theorem-a-rotation-in-s-suffices">3. The prism theorem: a rotation in S suffices</h2>
+<p><strong>Theorem 3.</strong> Let n be odd and let S = R ∪ T generate D₂ₙ with R ≠ ∅. Then Cay(D₂ₙ, S) has a Hamiltonian cycle.</p>
+<p><em>Proof.</em> Assume 0 ∈ T. Let d = gcd(n, R) and m = n/d. Since R ≠ ∅ and R ⊆ Zₙ ∖ {0}, d &lt; n, so m ≥ 3 is odd. For c ∈ Z_d put</p>
+<p>V_c = { i_L, i_R : i ≡ c (mod d) }.</p>
+<p><em>Step 1: each V_c carries a Hamilton-connected spanning subgraph.</em> Map i_L ↦ ((i − c)/d, 0) and i_R ↦ ((i − c)/d, 1) into Z_m × Z₂. The rotation edges become steps ±b/d in the first coordinate on both sides (R is symmetric, so the sign reversal on the R side is harmless), and the t = 0 matching becomes the step (0, 1). So the subgraph Q_c of Cay(D₂ₙ, S) induced on V_c contains a spanning copy of the Cayley graph</p>
+<p>Q = Cay(Z_m × Z₂, B' ∪ {(0,1)}), B' = R/d ⊆ Z_m.</p>
+<p>B' generates Z_m because gcd(m, R/d) = 1, so Q is connected, and it has degree |R| + 1 ≥ 3. Q is not bipartite: it contains the connected circulant Circ(m, B'), a vertex-transitive graph of odd order, which cannot be bipartite. By the theorem of Chen and Quimpo (1981), a connected Cayley graph on an abelian group with degree at least 3 is Hamilton-connected unless it is bipartite. Hence Q, and therefore Q_c, is Hamilton-connected: any two distinct vertices of V_c are joined by a path through all of V_c.</p>
+<p><em>Step 2: the quotient is a Hamiltonian circulant.</em> For t ∈ T with t̄ = t mod d ≠ 0, the edge i_L ~ (i+t)<em>R joins V_c to V</em>{c+t̄}, and the edge (i)<em>R ~ (i−t)<em>L joins V_c to V</em>{c−t̄}. Let Γ̄ = Circ(d, ±T̄') with T̄' = {t̄ ≠ 0}. Since S generates D₂ₙ, R ∪ (T − T) generates Zₙ, and reducing mod d (R ⊆ dZₙ) shows T̄ − T̄ generates Z_d; because 0 ∈ T̄ this subgroup is ⟨T̄'⟩, so Γ̄ is connected. If d = 1 then V₀ is the whole vertex set and Step 1 already gives a Hamiltonian cycle (Q_c is Hamilton-connected, so it has a Hamiltonian cycle: join a Hamiltonian path between two adjacent vertices). If d ≥ 3 (d is odd), Γ̄ is a connected Cayley graph on the abelian group Z_d, so it has a Hamiltonian cycle c₀ = 0, c₁, …, c</em>{d−1}. Each step c_j → c_{j+1} equals ε_j t̄_j for some t_j ∈ T and sign ε_j = ±1.</p>
+<p><em>Step 3: chaining.</em> Start at a vertex v₀ ∈ V₀ whose side will be fixed below. Traverse V_{c₀}, V_{c₁}, …, V_{c_{d−1}} in order. Entering V_{c_j} at u_j, choose an exit w_j ≠ u_j as follows: if ε_j = +1, take w_j = x_L for some x ≡ c_j and jump to u_{j+1} = (x + t_j)<em>R ∈ V</em>{c_{j+1}}; if ε_j = −1, take w_j = x_R and jump to u_{j+1} = (x − t_j)<em>L ∈ V</em>{c_{j+1}}. Inside V_{c_j} use a Hamiltonian path of Q_{c_j} from u_j to w_j, which exists by Step 1 because u_j ≠ w_j. The last jump must land on v₀: if ε_{d−1} = +1 put v₀ on the R side and then w_{d−1} = (v₀ − t_{d−1})<em>L is forced; if ε</em>{d−1} = −1 put v₀ on the L side and w_{d−1} = (v₀ + t_{d−1})<em>R is forced. We need u</em>{d−1} ≠ w_{d−1}. But u_{d−1} is determined by w_{d−2}, which can be any of the m ≥ 3 vertices of the required side of V_{c_{d−2}} other than u_{d−2}; at least two choices remain and at most one of them produces u_{d−1} = w_{d−1}. (d ≥ 3 ensures V_{c_{d−2}} ≠ V_{c₀}, so the choice does not interfere with v₀.) The concatenation of the d paths and the d jumps visits every vertex of every V_c exactly once and closes at v₀. ∎</p>
+<p>Remarks.</p>
+<ul>
+<li>The proof uses only the rotations in R, the reflection 0, and one reflection per step of the quotient cycle. All other edges are spare.</li>
+<li>The argument fails for n even exactly where the literature says it is hard: m may be even, Q_c may be bipartite, and Chen–Quimpo then gives only Hamilton-laceability, which constrains the sides of entries and exits.</li>
+<li>I have not found this statement in the literature, but it is elementary and may well be known. It should be checked against Alspach's and Morris's papers before being claimed as new.</li>
+</ul>
+<h2 id="4-what-remains-haar-graphs-of-odd-cyclic-groups">4. What remains: Haar graphs of odd cyclic groups</h2>
+<p>By Theorem 3 and Lemma 1, the odd dihedral case reduces to:</p>
+<p><strong>Conjecture H.</strong> Let n be odd and A ⊆ Zₙ with A − A generating Zₙ. Then the Haar graph H(Zₙ, A), the bipartite graph with parts Zₙ, Zₙ and edges i_L ~ (i+a)_R for a ∈ A, has a Hamiltonian cycle.</p>
+<p>H(Zₙ, A) = Cay(D₂ₙ, {rᵃs : a ∈ A}). By Lemma 1 it holds when A has a unit difference, so by Lemma 2 it holds whenever n has at most two distinct prime factors, hence for all odd n &lt; 105. Cubic instances (|A| = 3) are Hamiltonian by Alspach and Zhang (1989). The order-pqrs theorem of Lehner, Maghsoudi and Miraftab (2026) covers n = 105, 165, 195, 231, 255, 273, 285, … (squarefree with three odd primes). The first instances not covered by anything are n = 315 = 3²·5·7 with |A| ≥ 4.</p>
+<p><strong>Structure of hard sets.</strong> A hard set A (no unit difference, generating) is, in residue coordinates modulo the primes of n, a set of points that pairwise agree in some coordinate and are not constant in any coordinate. For three primes the maximal such configurations include "crosses": all points on three concurrent axis-parallel lines through a common point, e.g. {(x,0,1)} ∪ {(0,y,1)} ∪ {(0,0,z)}, of size p+q+r−2. Every fibre over a residue pattern has n/(p₁⋯p_k) elements, so the number of hard sets grows with the exponents as well.</p>
+<p><strong>Why the prism argument does not extend.</strong> With R = ∅ the natural blocks are the alternating (a, a')-cycles, which are cycles of length 2n/gcd(n, a−a'); cycles are far from Hamilton-connected, so entries and exits cannot be chosen freely. The right tool is instead the factor group lemma at a prime.</p>
+<h2 id="4a-the-factor-group-lemma-at-a-prime">4a. The factor group lemma at a prime</h2>
+<p><strong>Factor Group Lemma (Witte–Gallian).</strong> Let N be a cyclic normal subgroup of G, and let (s₁, …, s_k) be a closed walk in Cay(G/N, S̄) that is a Hamiltonian cycle there, with lifts sᵢ ∈ S. If the product s₁⋯s_k generates N, then the walk (s₁, …, s_k) repeated |N| times is a Hamiltonian cycle of Cay(G, S).</p>
+<p>Apply it to G = D₂ₙ, N = ⟨rᵖ⟩ for a prime p | n, so G/N = D₂ₚ and Cay(G/N, S̄) = H(Zₚ, Ā) with Ā = A mod p. A product of reflections is (r^{t₁}s)(r^{t₂}s)⋯ = r^{t₁ − t₂ + t₃ − ⋯}, so a closed walk with reflection labels t₁, …, t_{2p} has <em>voltage</em> σ = t₁ − t₂ + ⋯ − t_{2p}, and it lifts to a Hamiltonian cycle iff gcd(σ, n) = p. Since p is prime, any two distinct residues ā ≠ b̄ in Ā differ by a unit mod p, so the walk alternating the classes b̄ (on L→R edges) and ā (on R→L edges) is a Hamiltonian cycle of H(Zₚ, Ā). Its lifts are free: choose y₁, …, yₚ ∈ Y := {a ∈ A : a ≡ b̄} and x₁, …, xₚ ∈ X := {a ∈ A : a ≡ ā}, and</p>
+<p>σ = Σ yᵢ − Σ xᵢ = Σ (yᵢ − xᵢ), a sum of p elements of Y − X.</p>
+<p><code>haar.py</code> (<code>fgl_witness</code>) searches over primes, quotient cycles and lifts for such a σ and verifies the lifted cycle. It certifies every hard set tested (Section 5).</p>
+<p><strong>Theorem H3.</strong> Let n be odd with exactly three distinct prime factors p &lt; q &lt; r (any exponents), and let A ⊆ Zₙ have no unit difference with A − A generating Zₙ. Then H(Zₙ, A) is Hamiltonian; explicitly, the alternating cycle of H(Zₚ, A mod p) between two suitable classes lifts.</p>
+<p><em>Proof.</em> Write v(a) = (a mod p, a mod q, a mod r). Since A has no unit difference, any two elements agree in some coordinate; since A − A generates Zₙ, A is not constant in any coordinate. Partition A into its classes A_c, c ∈ Ā, modulo p; there are at least two.</p>
+<p><em>Step 1: two classes X, Y whose union is non-constant mod q and mod r.</em> Call a class q-constant if it lies in one residue class mod q, and similarly r-constant. If some class A_c is neither q-constant nor r-constant, then for any other class A_{c'} the union is non-constant mod q and mod r; take X = A_c, Y = A_{c'}. If some class A_c is q-constant but not r-constant, then for any other class A_{c'}, the union A_c ∪ A_{c'} is not r-constant; if it were q-constant for every c', all of A would lie in one residue class mod q, contradicting generation, so some c' gives a union non-constant mod both. Symmetrically if some class is r-constant but not q-constant. Otherwise every class is both q- and r-constant, i.e. each class has a single (q, r)-residue pair. Any two elements of different classes disagree mod p, so they agree mod q or mod r; hence the residue pairs of the classes are points of Z_q × Z_r that pairwise share a row or a column. By the rook argument of Lemma 2, such a set of points lies in one row or one column, unless it has only two points. If it lies in one row, A is constant mod q, contradiction; one column, constant mod r, contradiction. So there are exactly two classes with residue pairs sharing neither a row nor a column, and their union is non-constant mod q and mod r. In every case Step 1 succeeds.</p>
+<p><em>Step 2: a q-type and an r-type difference.</em> Every d = y − x with y ∈ Y, x ∈ X is nonzero mod p (different classes) and is a non-unit, so q | d or r | d. If every such d were divisible by q, then X ∪ Y would be constant mod q (fix x; every y ≡ x; fix y; every x ≡ y), contradicting Step 1. So some d = y − x has r | d and q ∤ d... precisely: some d is not divisible by q, and it is then divisible by r; call it d' = y' − x' (r-type). Symmetrically some d = y − x is divisible by q and not by r (q-type).</p>
+<p><em>Step 3: the voltage.</em> For j ∈ {1, …, p − 1} take j copies of the pair (y, x) and p − j copies of (y', x'), so σ_j = j d + (p − j) d'. Then σ_j ≡ (p − j) d' (mod q), which is nonzero because q ∤ d' and 0 &lt; p − j &lt; p &lt; q; and σ_j ≡ j d (mod r), nonzero because r ∤ d and 0 &lt; j &lt; p &lt; r. Also p | σ_j because d ≡ d' ≡ b̄ − ā (mod p). If p² ∤ n this already gives gcd(σ_j, n) = p for every j. If p² | n we also need p² ∤ σ_j. Write d ≡ (b̄ − ā) + p w and d' ≡ (b̄ − ā) + p w' (mod p²); then σ_j/p ≡ (b̄ − ā) + j(w − w') (mod p). If w ≡ w' this is b̄ − ā ≢ 0 for every j. Otherwise j ↦ (b̄ − ā) + j(w − w') is a bijection of Zₚ, so exactly one residue j₀ is bad, and among the p − 1 ≥ 2 values j = 1, …, p − 1 at least one is good. In all cases some j gives gcd(σ_j, n) = p, and the Factor Group Lemma lifts the alternating quotient cycle with labels (y, x)ʲ(y', x')^{p−j} to a Hamiltonian cycle of H(Zₙ, A). ∎</p>
+<p><code>theorem_h3_cycle</code> in <code>haar.py</code> follows this proof literally and asserts at each step; it produced verified Hamiltonian cycles for all 73 hard sets on Z₁₀₅ with |A| ≤ 6 and all 729 hard sets on Z₃₁₅ with |A| ≤ 5.</p>
+<p><strong>Corollary.</strong> Every connected Cayley graph on D₂ₙ, n odd with at most three distinct prime factors, has a Hamiltonian cycle.</p>
+<p><em>Proof.</em> If S contains a rotation, Theorem 3. Otherwise S is a set of reflections A; if A has a unit difference, Lemma 1; if not, Lemma 2 forces three distinct primes and Theorem H3 applies. ∎</p>
+<p>This covers every order in the <code>coverage.py</code> list of Section 1 (all of them have n = pᵃqᵇ or pᵃqᵇrᶜ). The smallest odd n with four distinct prime factors is 1155 = 3·5·7·11 (order 2310), and this is now the first open dihedral case. The obstacle for four primes is Step 1: with three other primes, classes can be constant modulo two of them each, pairwise sharing a constant prime, so that no pair of classes has a union non-constant modulo all three; then one must use quotient cycles through three or more classes, or the lemma at a different prime. Whether the factor group lemma at some prime always works is the natural next conjecture, and <code>fgl_witness</code> tests it.</p>
+<h2 id="5-computations">5. Computations</h2>
+<p>Tools: <code>dihedral.py</code> (generating sets with a rotation), <code>haar.py</code> (reflections only), <code>coverage.py</code> (literature coverage). Hamiltonicity is tested by a Pósa rotation-extension heuristic with restarts, then a pruned DFS; a returned cycle is verified, a failure proves nothing.</p>
+<p><code>dihedral.py</code> enumerates, up to Aut(D₂ₙ), the generating sets that Lemmas 1 and the trivial "R generates Zₙ" case do not settle (T without unit differences, R inside a proper subgroup), restricted to |T| ≤ 4 and |R| ≤ 4, and classifies them by the finer criteria L2 and L5 that were written before Theorem 3 was found. Results for odd composite n &lt; 100: every such set has a Hamiltonian cycle found by search, as Theorem 3 predicts, including the sets that L2 and L5 leave unresolved (all of them have R = {±b} with gcd(b, n) small, for example n = 45, R = {±3}, T = {0, 5}).</p>
+<p><code>haar.py</code> enumerates hard reflection sets up to affine equivalence by depth-first search over cliques of the agreement relation, certifies each by the factor group lemma at a prime (<code>fgl_witness</code>, any prime, any quotient cycle, verified lift), and falls back to search.</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>n</th>
+<th>order</th>
+<th>sets tested</th>
+<th>sizes</th>
+<th>certified by FGL at a prime</th>
+<th>Theorem H3 construction verified</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>105</td>
+<td>210</td>
+<td>73 with |A| ≤ 6</td>
+<td>3: 1, 4: 8, 5: 22, 6: 42</td>
+<td>73 of 73</td>
+<td>73 of 73</td>
+</tr>
+<tr>
+<td>315</td>
+<td>630</td>
+<td>69 with |A| ≤ 4</td>
+<td>3: 3, 4: 66</td>
+<td>69 of 69</td>
+<td>69 of 69</td>
+</tr>
+<tr>
+<td>315</td>
+<td>630</td>
+<td>729 with |A| ≤ 5</td>
+<td></td>
+<td></td>
+<td>729 of 729</td>
+</tr>
+</tbody>
+</table></div>
+<p>The sets on Z₃₁₅ were, before Theorem H3, instances that no published theorem covered. The enumeration explodes with |A| because subsets of one residue class are all pairwise agreeing, so runs are capped by size. Brute force also confirmed the Chen–Quimpo ingredient of Theorem 3 on all 56 prism blocks with m ≤ 11.</p>
+<h2 id="6-literature-check-done">6. Literature check (done)</h2>
+<p>Both theorems are known, and the corollary is stated explicitly in the literature. The <code>coverage.py</code> list in Section 1 was therefore wrong: it missed a 1982 result that is not an "order" theorem.</p>
+<ul>
+<li><strong>The corollary is Witte's.</strong> Kutnar, Marušič, Morris, Morris and Šparl (2012), Lemma 2.22, state: "If n has at most three distinct prime factors, then every connected Cayley graph on D₂ₙ has a hamiltonian cycle", attributed to D. Witte, <em>On Hamiltonian circuits in Cayley diagrams</em>, Discrete Math. 38 (1982) 99–108, Proposition 5.5. Their proof of the neighbouring Proposition 2.23 (Jungreis–Friedman) begins "we may assume S ∩ A = ∅ (cf. [Witte, Thm. 5.3])", where A is the abelian subgroup of index 2: that is Theorem 3 above, the reduction to reflections only, and Witte's Proposition 5.5 is Theorem H3 plus the corollary. The same paper's Section 2F ("Generator in a cyclic, normal subgroup", Lemma 2.27) is the general form of the lifting used in Section 4a.</li>
+<li><strong>The Haar-graph form is also recent literature.</strong> Bonvicini, Pisanski and Žitnik, <em>On the Hamiltonian bicirculants</em>, arXiv:2510.23420 (2025), Lemma 5.1, quoted from their <em>All generalized rose window graphs are hamiltonian</em>, arXiv:2504.16205 (2025): a connected cyclic Haar graph H(m; S) with |S| ≥ 4 is Hamiltonian when m is a product of at most three prime powers. Their Theorem 1.2 extends this to all bicirculants B(m; R, S, T) with |S| ≥ 3, and they state that "a smallest open case with odd m" has m = 1155 and name cyclic Haar graphs H(m; S) with odd m having at least four prime-power factors and |S| ≥ 4 as the "prominent open cases". Their follow-up, <em>On the hamiltonicity problem of bicirculants: a reduction to cyclic Haar graphs</em>, arXiv:2604.21607 (2026), Theorem 1.3, shows that Hamiltonicity of all connected cyclic Haar graphs of valence ≥ 4 would settle all bicirculants with |S| ≥ 4; it also settles |S| ≥ 4 when m/gcd(m, S) is even, so the odd case is exactly what remains.</li>
+<li><strong>Cubic and Hamilton-path facts</strong> used above are Alspach–Zhang (1989) and Alspach–Chen–Dean (2010, Lemma 2.9: every connected cyclic Haar graph has a Hamilton path).</li>
+<li>The Holsztyński–Strube conjecture (1978) that every connected Cayley graph on a dihedral group is Hamiltonian is still open; the 2018 Zhou–Xia claim of a full proof was withdrawn.</li>
+</ul>
+<p>So the state of the art for D₂ₙ, n odd, is exactly what Sections 3 and 4a rederive: open precisely for reflection-only generating sets with n having at least four distinct prime factors, first case n = 1155 = 3·5·7·11, with |A| ≥ 4 and no unit difference. Nothing in this directory is new mathematics; its value is the self-contained proofs, the certificate code, and the enumeration tools, which now target the genuinely open case.</p>
+<h2 id="7-next-steps">7. Next steps</h2>
+<ol type="1">
+<li>Four distinct primes, first case n = 1155. Test whether the factor group lemma at some prime certifies every hard set (<code>python3 haar.py 1155 4</code>); if it does, look for a proof using quotient cycles through several classes or a choice of prime adapted to the class structure, which would extend Witte's theorem. If it does not, the failing sets are candidate counterexamples and deserve an exact Hamiltonicity test. Bonvicini–Pisanski–Žitnik name B(1155; 105, {0, 33, 110}, 315) as their smallest open odd bicirculant; it is not a Cayley graph on a dihedral group (R ≠ T) but is a natural test for the search code.</li>
+<li>A general proof for any number of primes, perhaps by induction on the number of primes using the lemma at the smallest prime and Theorem H3-style counting with more slots. Where Step 1 of the H3 proof fails (every pair of classes constant modulo a shared prime), quotient cycles through three or more classes give extra freedom that the two-class argument does not use.</li>
+<li>Read Witte (1982), Section 5, to see how far his argument actually reaches and whether his method already suggests the four-prime obstruction.</li>
+</ol>
+
+</main>
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>
+</body>
+</html>

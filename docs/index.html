@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lovász Conjecture Project</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap">
+<style>
+:root {
+  --paper:#F6F7F5; --ink:#1A2230; --muted:#5B6470; --rule:#D5D9D3; --soft:#ECEEEA;
+  --accent:#1E6E73; --accent-ink:#155257; --open:#8A4B1A;
+  --display:"Fraunces", Georgia, "Times New Roman", serif;
+  --body:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --ui:"IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:#151A1F; --ink:#E6E8E4; --muted:#9AA3AD; --rule:#2C343C; --soft:#1D242B;
+    --accent:#5FC1C5; --accent-ink:#8ED6D9; --open:#E0A06A; color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+body { margin:0; background:var(--paper); color:var(--ink); font-family:var(--body); font-size:17px; line-height:1.6; }
+a { color:var(--accent-ink); text-decoration-thickness:1px; text-underline-offset:2px; }
+a:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+.wrap { max-width:1120px; margin:0 auto; padding:0 24px 96px; }
+nav.site { display:flex; gap:22px; padding:18px 0 0; font-family:var(--ui); font-size:13px; letter-spacing:.04em; text-transform:uppercase; }
+nav.site a { color:var(--muted); text-decoration:none; }
+nav.site a:hover { color:var(--accent-ink); }
+header.mast { display:grid; grid-template-columns:1fr auto; gap:32px; align-items:end; padding:40px 0 32px; border-bottom:1px solid var(--rule); }
+.eyebrow { font-family:var(--ui); font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin:0 0 14px; }
+header h1 { font-family:var(--display); font-weight:500; font-size:clamp(34px, 4.6vw, 54px); line-height:1.08; margin:0 0 18px; text-wrap:balance; max-width:22ch; letter-spacing:-.01em; }
+.dek { font-size:19px; color:var(--muted); max-width:58ch; margin:0; text-wrap:pretty; }
+.petersen { width:168px; height:168px; }
+.petersen line { stroke:var(--accent); stroke-width:2.2; stroke-linecap:round; }
+.petersen circle { fill:var(--paper); stroke:var(--ink); stroke-width:2.2; }
+.grid { display:grid; grid-template-columns:220px minmax(0,1fr); gap:56px; padding-top:40px; }
+nav.toc { position:sticky; top:24px; align-self:start; font-family:var(--ui); font-size:13.5px; line-height:1.45; }
+nav.toc .eyebrow { margin-bottom:10px; }
+nav.toc ol { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:7px; }
+nav.toc a { color:var(--muted); text-decoration:none; }
+nav.toc a:hover { color:var(--accent-ink); text-decoration:underline; }
+main { max-width:68ch; min-width:0; }
+main h2 { font-family:var(--display); font-weight:600; font-size:27px; line-height:1.2; margin:56px 0 14px; text-wrap:balance; letter-spacing:-.005em; }
+main h2:first-child { margin-top:0; }
+main h3 { font-family:var(--ui); font-weight:600; font-size:14px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent-ink); margin:34px 0 8px; }
+main p { margin:0 0 16px; text-wrap:pretty; }
+main ul, main ol { padding-left:1.3em; margin:0 0 18px; }
+main li { margin:0 0 7px; }
+main li::marker { color:var(--muted); font-family:var(--ui); font-size:.9em; }
+main strong { font-weight:600; }
+main code { font-family:"IBM Plex Mono", ui-monospace, Menlo, monospace; font-size:.88em; background:var(--soft); padding:1px 5px; border-radius:3px; }
+main pre { background:var(--soft); padding:14px 16px; overflow-x:auto; border-radius:4px; font-size:14px; line-height:1.5; }
+main pre code { background:none; padding:0; }
+.tablewrap { overflow-x:auto; margin:8px 0 26px; border-top:2px solid var(--ink); border-bottom:1px solid var(--rule); }
+table { border-collapse:collapse; width:100%; font-family:var(--ui); font-size:14px; line-height:1.4; font-variant-numeric:tabular-nums; }
+th { text-align:left; font-weight:600; font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); padding:10px 14px 8px 0; border-bottom:1px solid var(--rule); }
+td { vertical-align:top; padding:9px 14px 9px 0; border-bottom:1px solid var(--rule); }
+tr:last-child td { border-bottom:0; }
+#references ~ p { font-family:var(--ui); font-size:13px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin:28px 0 8px; }
+#references ~ ul { list-style:none; padding:0; font-size:15px; }
+#references ~ ul li { padding:6px 0 6px 18px; text-indent:-18px; border-bottom:1px solid var(--soft); }
+mjx-container { font-size:104% !important; }
+mjx-container[display="true"] { overflow-x:auto; }
+@media (max-width: 860px) {
+  .grid { grid-template-columns:1fr; gap:32px; }
+  nav.toc { position:static; border-bottom:1px solid var(--rule); padding-bottom:20px; }
+  nav.toc ol { flex-direction:row; flex-wrap:wrap; gap:6px 18px; }
+  header.mast { grid-template-columns:1fr; }
+  .petersen { width:120px; height:120px; }
+  body { font-size:16px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav class="site"><a href="index.html">Progress</a><a href="survey.html">Survey</a><a href="dihedral.html">Dihedral notes</a><a href="https://github.com/geneweng/lovasz-conjecture">Repository</a></nav>
+<header class="mast">
+  <div>
+    <p class="eyebrow">Project · prove it or break it</p>
+    <h1>Lovász Conjecture Project</h1>
+    <p class="dek">Working toward a proof or a counterexample. Survey, notes on the dihedral case, tools, and the hand-off log.</p>
+  </div>
+  <svg class="petersen" viewBox="-104 -104 208 208" role="img" aria-label="The Petersen graph">
+<line x1="0.0" y1="-90.0" x2="85.6" y2="-27.8"/>
+<line x1="0.0" y1="-90.0" x2="0.0" y2="-42.0"/>
+<line x1="0.0" y1="-42.0" x2="24.7" y2="34.0"/>
+<line x1="85.6" y1="-27.8" x2="52.9" y2="72.8"/>
+<line x1="85.6" y1="-27.8" x2="39.9" y2="-13.0"/>
+<line x1="39.9" y1="-13.0" x2="-24.7" y2="34.0"/>
+<line x1="52.9" y1="72.8" x2="-52.9" y2="72.8"/>
+<line x1="52.9" y1="72.8" x2="24.7" y2="34.0"/>
+<line x1="24.7" y1="34.0" x2="-39.9" y2="-13.0"/>
+<line x1="-52.9" y1="72.8" x2="-85.6" y2="-27.8"/>
+<line x1="-52.9" y1="72.8" x2="-24.7" y2="34.0"/>
+<line x1="-24.7" y1="34.0" x2="0.0" y2="-42.0"/>
+<line x1="-85.6" y1="-27.8" x2="0.0" y2="-90.0"/>
+<line x1="-85.6" y1="-27.8" x2="-39.9" y2="-13.0"/>
+<line x1="-39.9" y1="-13.0" x2="39.9" y2="-13.0"/>
+<circle cx="0.0" cy="-90.0" r="5"/>
+<circle cx="85.6" cy="-27.8" r="5"/>
+<circle cx="52.9" cy="72.8" r="5"/>
+<circle cx="-52.9" cy="72.8" r="5"/>
+<circle cx="-85.6" cy="-27.8" r="5"/>
+<circle cx="0.0" cy="-42.0" r="5"/>
+<circle cx="39.9" cy="-13.0" r="5"/>
+<circle cx="24.7" cy="34.0" r="5"/>
+<circle cx="-24.7" cy="34.0" r="5"/>
+<circle cx="-39.9" cy="-13.0" r="5"/>
+</svg>
+</header>
+<div class="grid">
+<nav class="toc" aria-label="Sections">
+  <p class="eyebrow">Sections</p>
+  <ol>
+  <li><a href="#goal">Goal</a></li>
+<li><a href="#what-exists">What exists</a></li>
+<li><a href="#where-the-dihedral-case-stands">Where the dihedral case stands</a></li>
+<li><a href="#computations-done">Computations done</a></li>
+<li><a href="#how-to-resume">How to resume</a></li>
+<li><a href="#commands">Commands</a></li>
+  </ol>
+</nav>
+<main>
+<p>Paused on 2026-09-03. This file is the hand-off: read it first when resuming.</p>
+<h2 id="goal">Goal</h2>
+<p>Prove the Lovász conjecture (every finite connected vertex-transitive graph has a Hamiltonian path; stronger forms: a Hamiltonian cycle with five known exceptions, or a Hamiltonian cycle in every connected Cayley graph), or construct a counterexample.</p>
+<h2 id="what-exists">What exists</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Where</th>
+<th>State</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Survey of the conjecture, results through September 2026, open problems</td>
+<td><code>lovasz-conjecture-survey.md</code>, rendered at <code>docs/survey.html</code></td>
+<td>done</td>
+</tr>
+<tr>
+<td>Odd dihedral case: definitions, reductions, proofs, literature check</td>
+<td><code>dihedral/NOTES.md</code>, rendered at <code>docs/dihedral.html</code></td>
+<td>done</td>
+</tr>
+<tr>
+<td>Enumeration and certification tools</td>
+<td><code>dihedral/dihedral.py</code>, <code>dihedral/haar.py</code>, <code>dihedral/coverage.py</code></td>
+<td>working, plain Python 3</td>
+</tr>
+<tr>
+<td>Run logs</td>
+<td><code>dihedral/*.log</code></td>
+<td>partial, see below</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="where-the-dihedral-case-stands">Where the dihedral case stands</h2>
+<p>Target: connected Cayley graphs on D₂ₙ with n odd (the even case is Alspach–Chen–Dean 2010).</p>
+<ol type="1">
+<li><strong>Reduction (Theorem 3 in the notes).</strong> If the generating set contains a rotation, the graph is Hamiltonian. Proof: pair the two cosets through the reflection s into blocks that are Cayley graphs on Z_m × Z₂, Hamilton-connected by Chen–Quimpo because m is odd, and chain the blocks along a Hamiltonian cycle of a circulant on Z_d. This is Witte's Theorem 5.3 (1982).</li>
+<li><strong>Reflection-only sets are cyclic Haar graphs H(Zₙ, A).</strong> Trivial when two reflections differ by a unit. Otherwise n needs at least three distinct primes (Lemma 2).</li>
+<li><strong>Three primes (Theorem H3).</strong> The factor group lemma at the smallest prime p always works: pick two classes of A mod p whose union is non-constant mod q and mod r, mix j copies of a q-divisible difference with p − j copies of an r-divisible one. Verified mechanically on 871 sets (n = 105, 315). This is Witte's Proposition 5.5 (1982), quoted as Lemma 2.22 in Kutnar–Marušič–Morris–Morris–Šparl (2012), and rediscovered as Lemma 5.1 of Bonvicini–Pisanski–Žitnik (2025).</li>
+<li><strong>First open case: n = 1155 = 3·5·7·11</strong>, reflection-only sets with |A| ≥ 4 and no unit difference. Bonvicini–Pisanski–Žitnik state the same and call cyclic Haar graphs with odd m of four or more prime-power factors the prominent open cases; their 2026 paper shows these would settle all bicirculants of valence ≥ 4.</li>
+</ol>
+<p>So nothing found so far is new, but the notes give self-contained proofs, and the code produces verified Hamiltonian cycles as certificates.</p>
+<h2 id="computations-done">Computations done</h2>
+<ul>
+<li><code>dihedral.py</code>: all generating sets with a rotation that the trivial lemmas miss, up to Aut(D₂ₙ), |T| ≤ 3, |R| ≤ 4, for odd composite n &lt; 100: the sweep reached n = 85 (20 of 25 values) with a Hamiltonian cycle found for every set, as Theorem 3 predicts (<code>sweep_lt100.log</code>; an earlier partial run with |T| ≤ 4 reached n = 75, <code>sweep_lt100_T4_partial.log</code>).</li>
+<li><code>haar.py</code>: every hard reflection set on Z₁₀₅ with |A| ≤ 6 (73 sets) and on Z₃₁₅ with |A| ≤ 5 (729 sets) is certified by the factor group lemma; the literal Theorem H3 construction verifies on all of them.</li>
+<li>Brute force confirmed Hamilton-connectedness of the Z_m × Z₂ blocks for m ≤ 11.</li>
+<li>The n = 1155 run (<code>haar.py 1155 4</code>) never got past enumeration: the clique search over raw elements is far too slow at that size (about 700 elements agree with 0). It was stopped.</li>
+</ul>
+<h2 id="how-to-resume">How to resume</h2>
+<ol type="1">
+<li><strong>Fix the n = 1155 enumeration.</strong> Since 1155 is squarefree, elements correspond to residue vectors in Z₃×Z₅×Z₇×Z₁₁, and the affine group acts coordinatewise. Enumerate 4-point configurations by residue pattern (pairwise agreeing in some coordinate, not constant in any) up to coordinatewise affine equivalence, instead of DFS over 700 elements. Then run <code>fgl_witness</code> on each and search on the failures.</li>
+<li><strong>If the factor group lemma certifies everything at n = 1155</strong>, look for the four-prime proof: where Step 1 of Theorem H3 fails (every pair of classes constant modulo a shared prime), use quotient cycles through three or more classes or the lemma at a different prime. That would extend Witte's theorem and, via Bonvicini–Pisanski–Žitnik 2026, settle more bicirculants.</li>
+<li><strong>If some set resists</strong>, it is a candidate counterexample: run an exact Hamiltonicity test (a SAT encoding; the graph has 2310 vertices and degree 4).</li>
+<li>Their named open bicirculant B(1155; 105, {0, 33, 110}, 315) is a good stress test for the search code even though it is not a dihedral Cayley graph.</li>
+<li>Other starting points from the survey's open-problem list: cubic Cayley graphs with (2, s, 3)-presentations for s ≡ 2 mod 4, vertex-transitive graphs of order 5p, imprimitive graphs of order 2pq.</li>
+</ol>
+<h2 id="commands">Commands</h2>
+<pre><code>python3 dihedral/coverage.py          # odd n not covered by published theorems
+python3 dihedral/dihedral.py 45 3 4   # one n: |T|&lt;=3, |R|&lt;=4
+python3 dihedral/haar.py 315 4        # hard reflection sets, FGL certificates, search</code></pre>
+
+</main>
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>
+</body>
+</html>
