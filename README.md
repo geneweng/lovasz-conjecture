@@ -23,6 +23,7 @@ Either
 ## Contents
 
 - [lovasz-conjecture-survey.md](lovasz-conjecture-survey.md): a survey of the conjecture, its variants, known results by graph order, group class and density, long-cycle bounds, the directed setting, and open problems, with references through September 2026. Read this first.
+- [dihedral/](dihedral/): work on Cayley graphs of dihedral groups D₂ₙ with n odd. `NOTES.md` has the reductions and proofs: the prism theorem (any generating set containing a rotation gives a Hamiltonian cycle) reduces the case to Haar graphs of odd cyclic groups, and the factor group lemma at the smallest prime settles those when n has at most three distinct prime factors. Together: every connected Cayley graph on D₂ₙ with n odd having at most three distinct prime factors is Hamiltonian. The first open case is n = 1155. `dihedral.py`, `haar.py` and `coverage.py` are the enumeration, certification and search tools; `*.log` files are their outputs.
 
 ## Starting points
 

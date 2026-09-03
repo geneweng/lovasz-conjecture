@@ -1,0 +1,27 @@
+n=9 (order 18): 0 hard generating sets up to Aut; 
+n=15 (order 30): 6 hard generating sets up to Aut; L2=2, L5=4
+n=21 (order 42): 7 hard generating sets up to Aut; L2=2, L5=5
+n=25 (order 50): 0 hard generating sets up to Aut; 
+n=27 (order 54): 0 hard generating sets up to Aut; 
+n=33 (order 66): 9 hard generating sets up to Aut; L2=4, L5=5
+n=35 (order 70): 10 hard generating sets up to Aut; L2=5, L5=5
+n=39 (order 78): 12 hard generating sets up to Aut; L2=6, L5=6
+  n=45 R=(3, 42) T=(0, 5): |R|=2, d=3, m=15: no quotient cycle lifts; HC found: True
+n=45 (order 90): 51 hard generating sets up to Aut; L2=37, L5=13, unresolved=1
+n=49 (order 98): 0 hard generating sets up to Aut; 
+n=51 (order 102): 14 hard generating sets up to Aut; L2=8, L5=6
+n=55 (order 110): 12 hard generating sets up to Aut; L2=7, L5=5
+n=57 (order 114): 15 hard generating sets up to Aut; L2=8, L5=7
+  n=63 R=(3, 60) T=(0, 7): |R|=2, d=3, m=21: no quotient cycle lifts; HC found: True
+n=63 (order 126): 66 hard generating sets up to Aut; L2=49, L5=16, unresolved=1
+n=65 (order 130): 16 hard generating sets up to Aut; L2=10, L5=6
+n=69 (order 138): 17 hard generating sets up to Aut; L2=10, L5=7
+  n=75 R=(5, 70) T=(0, 3): |R|=2, d=5, m=15: no quotient cycle lifts; HC found: True
+  n=75 R=(3, 72) T=(0, 10): |R|=2, d=3, m=25: no quotient cycle lifts; HC found: True
+  n=75 R=(3, 72) T=(0, 5): |R|=2, d=3, m=25: no quotient cycle lifts; HC found: True
+  n=75 R=(3, 72) T=(0, 10, 40): |R|=2, d=3, m=25: no quotient cycle lifts; HC found: True
+  n=75 R=(3, 72) T=(0, 5, 20): |R|=2, d=3, m=25: no quotient cycle lifts; HC found: True
+n=75 (order 150): 196 hard generating sets up to Aut; L2=164, L5=27, unresolved=5
+n=77 (order 154): 15 hard generating sets up to Aut; L2=9, L5=6
+n=81 (order 162): 0 hard generating sets up to Aut; 
+n=85 (order 170): 18 hard generating sets up to Aut; L2=12, L5=6

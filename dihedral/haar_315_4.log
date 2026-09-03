@@ -1,0 +1,3 @@
+n=315 primes=[3, 5, 7]: 69 hard reflection sets up to equivalence (|A| <= 4)
+  sizes: {3: 3, 4: 66}
+  Hamiltonian cycle found for 69 of 69
