@@ -8,6 +8,11 @@ Sources (see ../lovasz-conjecture-survey.md, Sections 5.2 and 5.3):
          orders kp (k<32, k!=24), kpq (k<6), pqr, kp^2 (k<5), kp^3 (k<3).
   MW20   Morris-Wilk: 6pq.        AMRS23: 8pq.
   M21    Morris: pqrs, all odd.   LMM26: pqrs, distinct primes (any).
+  W82    Witte, Discrete Math. 38 (1982), Prop. 5.5 (quoted as Lemma 2.22 in
+         Kutnar et al. 2012): D_2n is covered whenever n has at most three
+         distinct prime factors. This is specific to dihedral groups and was
+         missed in the first version of this script; it subsumes everything
+         above for dihedral groups of odd order below n = 1155.
 Prints the odd n < LIMIT for which order 2n is not covered by any of these.
 """
 
@@ -56,12 +61,12 @@ def covered(order):
 
 
 if __name__ == "__main__":
-    LIMIT = 400
+    LIMIT = 4000
     print("odd n whose dihedral group D_2n is NOT covered by the listed theorems:")
     for n in range(3, LIMIT, 2):
         f = factor(n)
-        if len(f) == 1:
-            continue  # prime power: Keating-Witte
+        if len(f) <= 3:
+            continue  # Witte 1982 (len 1 is also Keating-Witte)
         why = covered(2 * n)
         if why is None:
             print(f"  n={n:4d}  order {2*n:4d}  n = " + " * ".join(f"{p}^{e}" if e > 1 else str(p) for p, e in sorted(f.items())))
